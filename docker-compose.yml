@@ -1,0 +1,69 @@
+version: "2.4"
+
+networks:
+    hadoop_network:
+        driver: bridge
+    
+services:
+    master:
+        image: effeerre/hadoop
+        container_name: master
+        networks:
+            - hadoop_network
+        ports:
+            - "9870:9870"            
+        volumes:
+            - hadoop_namenode:/tmp/hadoop-root/dfs/name
+        stdin_open: true
+        tty: true
+
+    slave1:
+        image: effeerre/hadoop
+        container_name: slave1
+        networks:
+            - hadoop_network
+        ports:
+            - "9864:9864"
+        depends_on:
+            - master
+        volumes:
+            - hadoop_datanode1:/tmp/hadoop-root/dfs/data/
+        stdin_open: true
+        tty: true
+
+  
+    slave2:
+        image: effeerre/hadoop
+        container_name: slave2
+        networks:
+            - hadoop_network
+        ports:
+            - "9863:9864"
+        depends_on:
+            - master
+        volumes:
+            - hadoop_datanode2:/tmp/hadoop-root/dfs/data/
+        stdin_open: true
+        tty: true
+
+
+    slave3:
+        image: effeerre/hadoop
+        container_name: slave3
+        networks:
+            - hadoop_network
+        ports:
+            - "9862:9864"
+        depends_on:
+            - master
+        volumes:
+        - hadoop_datanode3:/tmp/hadoop-root/dfs/data/
+        stdin_open: true
+        tty: true
+
+
+volumes:
+    hadoop_namenode:
+    hadoop_datanode1:
+    hadoop_datanode2:
+    hadoop_datanode3:
