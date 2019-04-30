@@ -9,20 +9,16 @@ Login in bash masternode
 
 2. `docker exec -it master bash`
 
-SOLO PRIMO AVVIO!!
+Avvio dei servizi (HDFS - YARN - SPARK)
 
-3. `hdfs namenode -format`
-
-Avvio HDFS
-
-4. `$HADOOP_HOME/sbin/start-dfs.sh`
+3. `/sabd/start-services.sh`
 
 Controllo corretto avvio HDFS
 
-5. `hdfs dfsadmin -report`
+4. `hdfs dfsadmin -report`
 
 oppure al link http://localhost:9870/dfshealth.html
 
-Termino HDFS
+Termino i serivizi (HDFS - YARN - SPARK)
 
-6. `$HADOOP_HOME/sbin/stop-dfs.sh`
+5. `/sabd/stop-services.sh`
