@@ -1,0 +1,62 @@
+version: "2.4"
+
+networks:
+    hadoop_network:
+        driver: bridge
+    
+services:
+    master:
+        build:
+            context: ../docker-images/hdfs-yarn-spark
+        image: erreesse/my-hds-yarn-spark
+        container_name: master
+        hostname: master
+        networks:
+            - hadoop_network
+        ports:
+            - "9870:9870"
+            - "8088:8088"
+        stdin_open: true
+        tty: true
+
+    slave1:
+        image: erreesse/my-hds-yarn-spark
+        container_name: slave1
+        hostname: slave1
+        networks:
+            - hadoop_network
+        ports:
+            - "9864:9864"
+        depends_on:
+            - master
+        stdin_open: true
+        tty: true
+
+  
+    slave2:
+        image: erreesse/my-hds-yarn-spark
+        container_name: slave2
+        hostname: slave2
+        networks:
+            - hadoop_network
+        ports:
+            - "9863:9864"
+        depends_on:
+            - master
+        stdin_open: true
+        tty: true
+
+
+    slave3:
+        image: erreesse/my-hds-yarn-spark
+        container_name: slave3
+        hostname: slave3
+        networks:
+            - hadoop_network
+        ports:
+            - "9862:9864"
+        depends_on:
+            - master
+        stdin_open: true
+        tty: true
+
