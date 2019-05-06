@@ -4,25 +4,33 @@ import java.util.*;
 import POJO.WeatherDescriptionPojo;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.log4j.Level;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
+import org.slf4j.Logger;
 import scala.Tuple2;
+import scala.Tuple3;
+import scala.Tuple4;
 
 public class FirstQuerySolver {
 
+    public final static int STATICONE = 1;
 
-    public static void main(String args[]){
 
-        System.out.println("First query solver");
+    public static void main(String args[]) throws IOException {
+
+
 
         SparkConf conf = new SparkConf()
                 .setMaster("local")
                 .setAppName("First query Solver");
+        Logger logger = conf.log();
         JavaSparkContext jsc = new JavaSparkContext(conf);
+
 
         // Load and parse data
         //String path = args[0];
@@ -36,114 +44,112 @@ public class FirstQuerySolver {
 
         try {
             in = new FileReader(path);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
         }
 
-        try {
-            records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
-            headers = records.iterator().next().toMap().keySet();
-            headers.remove("datetime");
-            headers.forEach(System.out::println);
-            List<WeatherDescriptionPojo> weatherDescriptionPojos = new ArrayList<>();
-            Iterator<CSVRecord> iterator = records.iterator();
-            while (iterator.hasNext()){
+        records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
+        headers = records.iterator().next().toMap().keySet();
+        headers.remove("datetime");
+//        headers.forEach(System.out::println);
+        List<WeatherDescriptionPojo> weatherDescriptionPojos = new ArrayList<>();
+        Iterator<CSVRecord> iterator = records.iterator();
+        while (iterator.hasNext()) {
 
-                CSVRecord record = iterator.next();
-               for (String field:headers){
+            CSVRecord record = iterator.next();
+            for (String field : headers) {
 
-                   String dateTime = record.get("datetime");
-                   String description = record.get(field);
+                String dateTime = record.get("datetime");
+                String description = record.get(field);
 
 
-                   if (!description.isEmpty() && !dateTime.isEmpty()){
+                if (!description.isEmpty() && !dateTime.isEmpty()) {
 
-                           WeatherDescriptionPojo weatherDescriptionPojo = new WeatherDescriptionPojo(field,dateTime,description);
-                           weatherDescriptionPojos.add(weatherDescriptionPojo);
+                    WeatherDescriptionPojo weatherDescriptionPojo = new WeatherDescriptionPojo(field, dateTime, description);
+                    weatherDescriptionPojos.add(weatherDescriptionPojo);
 
-                       }
-               }
-
-              // weatherDescriptionPojos.forEach(System.out::println);
-
+                }
             }
 
-            Function<WeatherDescriptionPojo,Boolean> filterMarchAprilMay = e-> selectedMonths.contains(e.getDateTime().getMonthOfYear());
-
-            long start = System.currentTimeMillis();
-
-            JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos);
-
-            JavaRDD<WeatherDescriptionPojo> filteredRDD = descriptionRDD.filter(filterMarchAprilMay);
-
-
-            // key is City+yyyy-MM, value is all pojos within a month representing an hour of clear sky.
-/*            JavaPairRDD<String,Iterable<WeatherDescriptionPojo>> filteredKeyedByCity = keyedByCityRDD.filter(
-                    wsp -> {
-                        Iterator<WeatherDescriptionPojo> iterator3 = wsp._2().iterator();
-                        while (iterator3.hasNext()) {
-                            WeatherDescriptionPojo w = iterator3.next();
-                            if (w.getWeatherCondition().equals("sky is clear")) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    });*/
-
-            JavaPairRDD<String,Iterable<WeatherDescriptionPojo>> keyedByCityRDD = filteredRDD.groupBy(
-                    wdp -> wdp.getCity() + "_" + wdp.getDateTime().toString("yyyy-MM-dd"));
-
-/*            System.out.println(keyedByCityRDD.count());
-            Iterator<WeatherDescriptionPojo> iterator1 = keyedByCityRDD.take(1).get(0)._2().iterator();
-            int i=0;
-            while (iterator1.hasNext()) {
-                iterator1.next();
-               i++;
-            }
-            System.out.println(i);*/
-
-            // key is city+yyyy-MM-dd, value is 24 Pojos, one per hour, representing a clear day.
-            JavaPairRDD<String,Iterable<WeatherDescriptionPojo>> filteredKeyedByCity = keyedByCityRDD.filter(
-                    wsp -> {
-                        Iterator<WeatherDescriptionPojo> iterator3 = wsp._2().iterator();
-                        int count = 0;
-                        while (iterator3.hasNext()) {
-                            WeatherDescriptionPojo w = iterator3.next();
-                            if (w.getWeatherCondition().equals("sky is clear")) {
-                                count++;
-                            }
-                        }
-                        return count>12;
-                    });
-
-            JavaPairRDD keyedByCityMonthRDD = filteredKeyedByCity.groupBy(
-                    wdp-> wdp._2().iterator().next().getCity() + "_" + wdp._2().iterator().next().getDateTime().toString("yyyy-MM")
-            );
-
-
-
-
-            List<Tuple2<String, Iterable<WeatherDescriptionPojo>>> list = keyedByCityMonthRDD.collect();
-
-
-           Iterator<WeatherDescriptionPojo> iterator2 = list.get(0)._2.iterator();
-            while (iterator2.hasNext()) {
-                System.out.println(iterator2.next());
-            }
-
-/*            long endTime = System.currentTimeMillis();
-            long howLong = endTime-start;
-            System.out.println(howLong/1000L);*/
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
+        final double start = System.nanoTime();
+
+
+        JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos).cache();
+
+        //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
+        Function<WeatherDescriptionPojo,Boolean> filterMarchAprilMay = e-> selectedMonths.contains(e.getDateTime().getMonthOfYear());
+        JavaRDD<WeatherDescriptionPojo> selectedMonthRDD = descriptionRDD.filter(filterMarchAprilMay);
+
+        //Cancello tutti i POJO che NON contengono Sky is clear come descrizione
+        JavaRDD<WeatherDescriptionPojo> clearSkyMonthRDD = selectedMonthRDD.filter(wdp -> wdp.getWeatherCondition().equals("sky is clear"));
+
+        //Chiave è la Tupla4(Anno, Città,Mese, giorno del mese), value è 1
+        JavaPairRDD<Tuple4<Integer,String,Integer,Integer>,Integer> keyedYearCityMonthDayRDD = clearSkyMonthRDD.mapToPair(
+                wdp -> new Tuple2<>(new Tuple4<>
+                        (wdp.getDateTime().getYear(), wdp.getCity(), wdp.getDateTime().getMonthOfYear(), wdp.getDateTime().getDayOfMonth()),STATICONE));
+
+        // coppia (città+giornodelmese, somma degli orari con cielo sereno) -> conto quante ore di cielo sereno ci sono state in un giorno in una città
+        JavaPairRDD<Tuple4<Integer, String, Integer, Integer>, Integer> reducedYearCityMonthDayKeyedRDD = keyedYearCityMonthDayRDD.reduceByKey((a, b) -> a+b);
+
+        // Cancello tutti gli elementi che NON hanno almeno 12 ore di cielo sereno
+        //Logica di filtraggio implementabile secondo criterio a piacere
+        JavaPairRDD<Tuple4<Integer, String, Integer, Integer>, Integer> filteredByClearDayCriteriumRDD = reducedYearCityMonthDayKeyedRDD.filter(wdp-> wdp._2() >= 12);
+
+        //Quella che prima era la chiave "Anno,Città,Mese,GiornoDelMese" ora diventa una coppia chiave valore --> <K,V> = <<Anno,città,Mese>, 1>
+        JavaPairRDD<Tuple3<Integer, String, Integer>, Integer> reKeyedRDD = filteredByClearDayCriteriumRDD.mapToPair(wdp -> {
+            Tuple4<Integer, String, Integer, Integer> oldK = wdp._1();
+            Tuple3<Integer, String, Integer> newK = new Tuple3<>(oldK._1(),oldK._2(),oldK._3());
+            return new Tuple2<>(newK,STATICONE);
+        });
+
+        // riduco sulla chiave, quindi sommo le occorrenze di giorni sereni in una città
+        JavaPairRDD<Tuple3<Integer, String, Integer>, Integer> reducedAlmostRDD = reKeyedRDD.reduceByKey((a,b) -> a+b);
+
+        // Seguendo la logica di prima, la somma dei giorni deve essere maggiore di 15. Le chiavi rimaste sono le città con almeno 15 giorni di sole a Marzo.
+        JavaPairRDD<Tuple3<Integer, String, Integer>, Integer> moreThanFifteenDaysRDD = reducedAlmostRDD.filter(wdp-> wdp._2() >= 15);
+
+        //Nuovo mappaggio delle chiavi, chiave è <Anno,Città>, value è 1
+        JavaPairRDD<Tuple2<Integer,String>,Integer> newReKeyed = moreThanFifteenDaysRDD.mapToPair(wdp -> {
+
+            Tuple3<Integer, String, Integer> oldK = wdp._1();
+            Tuple2<Integer,String> newK = new Tuple2<>(oldK._1(),oldK._2());
+
+            return new Tuple2<>(newK,STATICONE);
+        });
+
+        //sommiamo i valori ottenendo il numero di mesi in cui una certà città in un certo anno è stata soleggiata...
+        JavaPairRDD<Tuple2<Integer, String>, Integer> sumMonthsRDD = newReKeyed.reduceByKey((a,b) -> a+b);
+
+        //Prendiamo i valori con value = 3, ovvero quelli che haano avuto i criteri per tutti e 3 i mesi
+        JavaPairRDD<Tuple2<Integer, String>, Integer> finalRDD = sumMonthsRDD.filter(wdp-> wdp._2() == 3);
+
+        JavaPairRDD<Integer,String> citiesPerRDD = finalRDD.mapToPair(wdp-> new Tuple2<>(wdp._1()._1(),wdp._1()._2()));
+
+        //Final map per avere record del tipo (Anno,Lista città)
+        JavaPairRDD<Integer, Iterable<String>> resultRDD = citiesPerRDD.groupByKey();
+
+        final double end = System.nanoTime();
+
+        final double delta = (end - start)/1000000000L;
+
+        System.out.printf("Query 1 completed in %f%n seconds\n",delta);
 
 
 
+        List<Tuple2<Integer, Iterable<String>>> list = resultRDD.collect();
+
+        int count = 0;
+        for (Tuple2 o: list
+             ) {
+            count++;
+            System.out.println(o._1());
+            System.out.println(o._2());
+        }
 
 
     }
 
 }
+
