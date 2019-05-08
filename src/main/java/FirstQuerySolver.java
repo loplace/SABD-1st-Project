@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+import POJO.CityPojo;
 import POJO.WeatherDescriptionPojo;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -28,6 +29,7 @@ public class FirstQuerySolver {
         SparkConf conf = new SparkConf()
                 .setMaster("local")
                 .setAppName("First query Solver");
+
         Logger logger = conf.log();
         JavaSparkContext jsc = new JavaSparkContext(conf);
 
@@ -48,6 +50,10 @@ public class FirstQuerySolver {
             ex.printStackTrace();
         }
 
+        //new, use preprocessor to grab city ID for correct UTC
+        CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
+        Map<String, CityPojo> cities = cityAttributesPreprocessor.process().getCities();
+
         records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
         headers = records.iterator().next().toMap().keySet();
         headers.remove("datetime");
@@ -66,6 +72,14 @@ public class FirstQuerySolver {
                 if (!description.isEmpty() && !dateTime.isEmpty()) {
 
                     WeatherDescriptionPojo weatherDescriptionPojo = new WeatherDescriptionPojo(field, dateTime, description);
+
+                    String key = weatherDescriptionPojo.getCity();
+                    CityPojo cityPojo = cities.get(key);
+                    if (cityPojo != null){
+                        String citytimezone = cityPojo.getTimezone();
+                        weatherDescriptionPojo.setDateTimezone(citytimezone);
+                    }
+
                     weatherDescriptionPojos.add(weatherDescriptionPojo);
 
                 }
@@ -76,7 +90,7 @@ public class FirstQuerySolver {
         final double start = System.nanoTime();
 
 
-        JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos).cache();
+        JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos);
 
         //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
         Function<WeatherDescriptionPojo,Boolean> filterMarchAprilMay = e-> selectedMonths.contains(e.getDateTime().getMonthOfYear());
@@ -84,6 +98,9 @@ public class FirstQuerySolver {
 
         //Cancello tutti i POJO che NON contengono Sky is clear come descrizione
         JavaRDD<WeatherDescriptionPojo> clearSkyMonthRDD = selectedMonthRDD.filter(wdp -> wdp.getWeatherCondition().equals("sky is clear"));
+
+        /*List<WeatherDescriptionPojo> firstTen = clearSkyMonthRDD.take(10);
+        firstTen.forEach(System.out::println);*/
 
         //Chiave è la Tupla4(Anno, Città,Mese, giorno del mese), value è 1
         JavaPairRDD<Tuple4<Integer,String,Integer,Integer>,Integer> keyedYearCityMonthDayRDD = clearSkyMonthRDD.mapToPair(

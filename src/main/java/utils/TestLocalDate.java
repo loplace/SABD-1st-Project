@@ -29,7 +29,7 @@ public class TestLocalDate {
         System.out.println(jerusalemTime);
 
 
-        PyServeContext.init("localhost",5678);
+        PyServeContext.init("localhost",8888);
         String script = "from timezonefinder import TimezoneFinder\n" +
                 "\n" +
                 "tf = TimezoneFinder(in_memory=True)\n" +

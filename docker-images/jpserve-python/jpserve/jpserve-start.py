@@ -1,4 +1,4 @@
 from jpserve.jpserve import JPServe
 
-serve = JPServe(("localhost", 8888))
+serve = JPServe(("0.0.0.0", 8888))
 serve.start()

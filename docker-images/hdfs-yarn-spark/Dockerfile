@@ -19,9 +19,9 @@ RUN chown root:root /usr/local/bootstrap.sh
 RUN chmod 700 /usr/local/bootstrap.sh
 
 # SPARK LIB FILES
-RUN wget http://it.apache.contactlab.it/spark/spark-2.4.2/spark-2.4.2-bin-hadoop2.7.tgz; 
-RUN tar -zxf spark-2.4.2-bin-hadoop2.7.tgz -C /usr/local/ ; rm spark-2.4.2-bin-hadoop2.7.tgz
-RUN cd /usr/local && ln -s ./spark-2.4.2-bin-hadoop2.7 spark
+RUN wget http://it.apache.contactlab.it/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz; 
+RUN tar -zxf spark-2.4.3-bin-hadoop2.7.tgz -C /usr/local/ ; rm spark-2.4.3-bin-hadoop2.7.tgz
+RUN cd /usr/local && ln -s ./spark-2.4.3-bin-hadoop2.7 spark
 ENV SPARK_HOME /usr/local/spark
 ENV PATH $PATH:$SPARK_HOME/bin
 RUN mkdir $SPARK_HOME/yarn-remote-client

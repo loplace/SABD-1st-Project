@@ -1,4 +1,4 @@
-version: "2.4"
+version: "2"
 
 networks:
     hadoop_network:
@@ -60,3 +60,16 @@ services:
         stdin_open: true
         tty: true
 
+
+    jpserve:
+        build:
+            context: ../docker-images/jpserve-python
+        image: erreesse/jpserve
+        container_name: jpserve
+        hostname: jpserve
+        networks:
+            - hadoop_network
+        ports:
+            - "8888:8888"
+        stdin_open: true
+        tty: true
