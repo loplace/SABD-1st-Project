@@ -1,9 +1,12 @@
 package utils;
 
 
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class TimezoneRetriever {
 
@@ -15,17 +18,19 @@ public class TimezoneRetriever {
         String msgFromServer = null;
         try{
             Socket soc = new Socket(HOST,PORT);
-            DataOutputStream dout = new DataOutputStream(soc.getOutputStream());
-            DataInputStream din = new DataInputStream(soc.getInputStream());
+
+            BufferedWriter bout = new BufferedWriter(new OutputStreamWriter( soc.getOutputStream()) );
+            Scanner scan = new Scanner(soc.getInputStream());
 
             String dataToSend = latitude + ";"+longitude;
-            dout.write(dataToSend.getBytes());
-            dout.flush();
+            bout.write(dataToSend);
+            bout.flush();
 
-            msgFromServer = din.readLine();
+            if (scan.hasNext()) {
+                msgFromServer = scan.nextLine();
+            }
 
-            dout.close();
-            din.close();
+            bout.close();
             soc.close();
         } catch(Exception e){
             e.printStackTrace();
