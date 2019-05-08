@@ -60,8 +60,8 @@ services:
         stdin_open: true
         tty: true
 
-
-    jpserve:
+        
+    timezonefinder:
         build:
             context: ../docker-images/timezonefinder-python
         image: erreesse/timezonefinder
@@ -71,5 +71,8 @@ services:
             - hadoop_network
         ports:
             - "8888:8888"
+        environment:
+            - TZ_HOST=0.0.0.0
+            - TZ_PORT=8888
         stdin_open: true
         tty: true

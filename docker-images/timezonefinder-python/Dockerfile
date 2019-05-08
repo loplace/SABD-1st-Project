@@ -11,5 +11,6 @@ RUN pip3 install numpy importlib_resources
 RUN mkdir /timezonefinder
 COPY timezonefinder /timezonefinder
 
-EXPOSE 8888
 CMD python3 /timezonefinder/server-start.py
+
+EXPOSE 8888

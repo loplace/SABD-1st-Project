@@ -4,7 +4,6 @@ package utils;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.TimeZone;
 
 public class TimezoneRetriever {
 
@@ -19,8 +18,8 @@ public class TimezoneRetriever {
             DataOutputStream dout = new DataOutputStream(soc.getOutputStream());
             DataInputStream din = new DataInputStream(soc.getInputStream());
 
-            String tosend = latitude + ";"+longitude;
-            dout.write(tosend.getBytes());
+            String dataToSend = latitude + ";"+longitude;
+            dout.write(dataToSend.getBytes());
             dout.flush();
 
             msgFromServer = din.readLine();
