@@ -1,42 +1,42 @@
 package utils;
 
-import net.xdevelop.jpclient.PyResult;
-import net.xdevelop.jpclient.PyServeContext;
-import net.xdevelop.jpclient.PyServeException;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.TimeZone;
 
 public class TimezoneRetriever {
 
-    public static String retrieveTimezone(double latitude, double longitude) throws PyServeException {
+    public static final String HOST = "localhost";
+    public static final int PORT = 8888;
 
-        PyServeContext.init("localhost",8888);
-        String script = "from timezonefinder import TimezoneFinder\n" +
-                "\n" +
-              //  "tf = TimezoneFinder(in_memory=True)\n" +
-                "tf = TimezoneFinder(in_memory=False)\n" +
-                "\n" +
-                "latitude = " + String.valueOf(latitude)  +"\n" +
-                "longitude = " + String.valueOf(longitude)  +"\n" +
-                "\n" +
-                "_result_ = tf.timezone_at(lng=longitude, lat=latitude)\n";
 
-      //  System.out.println(script);
+    public static String retrieveTimezone(double latitude, double longitude) {
+        String msgFromServer = null;
+        try{
+            Socket soc = new Socket(HOST,PORT);
+            DataOutputStream dout = new DataOutputStream(soc.getOutputStream());
+            DataInputStream din = new DataInputStream(soc.getInputStream());
 
-        // sned the script to PyServe, it returns the final result
-        PyResult rs = PyServeContext.getExecutor().exec(script);
+            String tosend = latitude + ";"+longitude;
+            dout.write(tosend.getBytes());
+            dout.flush();
 
-        // check if the execution is success
-        if (rs.isSuccess()) {
-            System.out.println("Result: " + rs.getResult()); // get the _result_ value
-        }
-        else {
-            System.out.println("Execute python script failed: " + rs.getMsg());
+            msgFromServer = din.readLine();
+
+            dout.close();
+            din.close();
+            soc.close();
+        } catch(Exception e){
+            e.printStackTrace();
         }
 
-        return rs.getResult().replaceAll("\"","");
+       return msgFromServer;
 
     }
 
-    public static void main(String[] args) throws PyServeException {
+    public static void main(String[] args){
         double latitude = 45.523449;
         double longitude = -122.676208;
 

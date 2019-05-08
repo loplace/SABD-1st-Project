@@ -63,10 +63,10 @@ services:
 
     jpserve:
         build:
-            context: ../docker-images/jpserve-python
-        image: erreesse/jpserve
-        container_name: jpserve
-        hostname: jpserve
+            context: ../docker-images/timezonefinder-python
+        image: erreesse/timezonefinder
+        container_name: timezonefinder
+        hostname: timezonefinder
         networks:
             - hadoop_network
         ports:

@@ -36,7 +36,8 @@ public class FirstQuerySolver {
 
         // Load and parse data
         //String path = args[0];
-        String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
+        //String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
+        String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
 
         Iterable<CSVRecord> records;
         Reader in = null;

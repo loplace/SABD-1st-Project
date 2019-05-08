@@ -1,4 +1,3 @@
-import net.xdevelop.jpclient.PyServeException;
 import utils.CityAttributeParser;
 import utils.TimezoneAssigner;
 
@@ -31,8 +30,6 @@ public class CityAttributesPreprocessor {
             TimezoneAssigner.assignTimezone(cap.getCities());
 
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PyServeException e) {
             e.printStackTrace();
         }
 

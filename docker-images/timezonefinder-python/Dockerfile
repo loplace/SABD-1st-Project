@@ -8,10 +8,8 @@ USER root
 # dipendenze di timezonefinder
 RUN pip3 install numpy importlib_resources 
 
-RUN pip3 install jpserve
-
-RUN mkdir /jpserve-timezonefinder
-COPY jpserve /jpserve-timezonefinder
+RUN mkdir /timezonefinder
+COPY timezonefinder /timezonefinder
 
 EXPOSE 8888
-CMD python3 /jpserve-timezonefinder/jpserve-start.py
+CMD python3 /timezonefinder/server-start.py
