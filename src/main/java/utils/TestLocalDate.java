@@ -25,26 +25,10 @@ public class TestLocalDate {
         System.out.println(laTime);
         System.out.println(jerusalemTime);
 
+        double latitude = 37.774929;
+        double longitude = -122.419418;
 
-        /*PyServeContext.init("localhost",8888);
-        String script = "from timezonefinder import TimezoneFinder\n" +
-                "\n" +
-                "tf = TimezoneFinder(in_memory=True)\n" +
-                "\n" +
-                "latitude = 37.774929\n" +
-                "longitude = -122.419418\n" +
-                "\n" +
-                "_result_ = tf.timezone_at(lng=longitude, lat=latitude)\n";
-
-        // sned the script to PyServe, it returns the final result
-        PyResult rs = PyServeContext.getExecutor().exec(script);
-
-        // check if the execution is success
-        if (rs.isSuccess()) {
-            System.out.println("Result: " + rs.getResult()); // get the _result_ value
-        }
-        else {
-            System.out.println("Execute python script failed: " + rs.getMsg());
-        }*/
+        String timezone = TimezoneRetriever.retrieveTimezone(latitude, longitude);
+        System.out.println("Timezone from server: "+timezone);
     }
 }

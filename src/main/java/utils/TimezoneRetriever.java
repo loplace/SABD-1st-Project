@@ -1,9 +1,6 @@
 package utils;
 
-
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Scanner;
@@ -31,6 +28,7 @@ public class TimezoneRetriever {
             }
 
             bout.close();
+            scan.close();
             soc.close();
         } catch(Exception e){
             e.printStackTrace();
