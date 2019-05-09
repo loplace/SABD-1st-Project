@@ -104,6 +104,9 @@ public class FirstQuerySolver {
 
         JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos,850);
 
+        descriptionRDD.foreach(wdp -> {
+            wdp.setDateTimezone(cities.get(wdp.getCity()).getTimezone());
+        });
      //   System.out.println("descriptionRDD.count(): " + descriptionRDD.count());
 
 
@@ -117,8 +120,8 @@ public class FirstQuerySolver {
      //   System.out.println("clearSkyMonthRDD.count(): " + clearSkyMonthRDD.count());
 
         //Cancello tutti i POJO che sono fuori da un range orario prestabilito
-        JavaRDD<WeatherDescriptionPojo> inHoursRangeRDD = clearSkyMonthRDD.filter(wdp -> wdp.getDateTime().hourOfDay().compareTo(startHour) >=0 &&
-                wdp.getDateTime().hourOfDay().compareTo(endHour)<=0 );
+        JavaRDD<WeatherDescriptionPojo> inHoursRangeRDD = clearSkyMonthRDD.filter(wdp -> wdp.getLocalDateTime().hourOfDay().compareTo(startHour) >=0 &&
+                wdp.getLocalDateTime().hourOfDay().compareTo(endHour)<=0 );
 
     //    System.out.println("inHoursRangeRDD.count(): " + inHoursRangeRDD.count());
 
@@ -133,7 +136,7 @@ public class FirstQuerySolver {
         // coppia (città+giornodelmese, somma degli orari con cielo sereno) -> conto quante ore di cielo sereno ci sono state in un giorno in una città
         JavaPairRDD<Tuple4<Integer, String, Integer, Integer>, Integer> reducedYearCityMonthDayKeyedRDD = keyedYearCityMonthDayRDD.reduceByKey((a, b) -> a+b);
 
-        // Cancello tutti gli elementi che NON hanno almeno 12 ore di cielo sereno
+        // Cancello tutti gli elementi che NON hanno almeno 8 ore di cielo sereno
         //Logica di filtraggio implementabile secondo criterio a piacere
         JavaPairRDD<Tuple4<Integer, String, Integer, Integer>, Integer> filteredByClearDayCriteriumRDD = reducedYearCityMonthDayKeyedRDD.filter(wdp-> wdp._2() >= 8);
 

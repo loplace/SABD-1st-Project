@@ -28,7 +28,7 @@ public class TestLocalDate {
         double latitude = 37.774929;
         double longitude = -122.419418;
 
-        String timezone = TimezoneRetriever.retrieveTimezone(latitude, longitude);
+        String timezone = CityLocationRetriever.retrieveLocationInfo(latitude, longitude);
         System.out.println("Timezone from server: "+timezone);
     }
 }

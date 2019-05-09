@@ -61,12 +61,12 @@ services:
         tty: true
 
         
-    timezonefinder:
+    citylocationhelper:
         build:
-            context: ../docker-images/timezonefinder-python
-        image: erreesse/timezonefinder
-        container_name: timezonefinder
-        hostname: timezonefinder
+            context: ../docker-images/citylocationhelper-python
+        image: erreesse/citylocationhelper
+        container_name: citylocationhelper
+        hostname: citylocationhelper
         networks:
             - hadoop_network
         ports:

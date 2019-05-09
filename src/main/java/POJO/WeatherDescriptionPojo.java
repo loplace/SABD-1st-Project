@@ -17,6 +17,12 @@ public class WeatherDescriptionPojo implements Serializable {
     private DateTimeZone dateTimezone;
 
 
+    public DateTime getLocalDateTime(){
+        if (this.dateTimezone!= null) {
+            return  this.dateTime.withZone(this.dateTimezone);
+        }
+        return this.dateTime;
+    }
 
     public DateTimeZone getDateTimezone() {
         return dateTimezone;

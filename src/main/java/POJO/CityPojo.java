@@ -6,6 +6,7 @@ public class CityPojo implements Serializable {
 
     String city;
     String timezone;
+    String country;
     double lat;
     double lon;
 
@@ -13,6 +14,15 @@ public class CityPojo implements Serializable {
         this.city = city;
         this.lat = lat;
         this.lon = lon;
+    }
+
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCity() {

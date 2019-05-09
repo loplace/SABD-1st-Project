@@ -1,5 +1,5 @@
 import utils.CityAttributeParser;
-import utils.TimezoneAssigner;
+import utils.LocationInfoAssigner;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ public class CityAttributesPreprocessor {
         CityAttributeParser cap = new CityAttributeParser();
         try {
             cap.parse();
-            TimezoneAssigner.assignTimezone(cap.getCities());
+            LocationInfoAssigner.locationInfoAssign(cap.getCities());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -27,7 +27,7 @@ public class CityAttributesPreprocessor {
         this.cap = new CityAttributeParser();
         try {
             cap.parse();
-            TimezoneAssigner.assignTimezone(cap.getCities());
+            LocationInfoAssigner.locationInfoAssign(cap.getCities());
 
         } catch (IOException e) {
             e.printStackTrace();
