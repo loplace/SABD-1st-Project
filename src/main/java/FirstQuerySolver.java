@@ -12,6 +12,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import scala.Tuple2;
 import scala.Tuple3;
@@ -32,6 +33,17 @@ public class FirstQuerySolver {
 
         JavaSparkContext jsc = new JavaSparkContext(conf);
         jsc.setLogLevel("WARN");
+
+/*        LocalTime earlier = new LocalTime("23:00:00");
+        LocalTime later = new LocalTime("23:12:34");
+
+        System.out.println(earlier.compareTo(later));   // -1
+        System.out.println(later.compareTo(earlier));   // 1
+        System.out.println(earlier.compareTo(earlier)); // 0*/
+
+        LocalTime startHour = new LocalTime("08:00:00");
+        LocalTime endHour = new LocalTime("18:00:00");
+
 
         // Load and parse data
         //String path = args[0];
@@ -92,6 +104,9 @@ public class FirstQuerySolver {
 
         JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos,850);
 
+     //   System.out.println("descriptionRDD.count(): " + descriptionRDD.count());
+
+
         //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
         Function<WeatherDescriptionPojo,Boolean> filterMarchAprilMay = e-> selectedMonths.contains(e.getDateTime().getMonthOfYear());
         JavaRDD<WeatherDescriptionPojo> selectedMonthRDD = descriptionRDD.filter(filterMarchAprilMay);
@@ -99,11 +114,19 @@ public class FirstQuerySolver {
         //Cancello tutti i POJO che NON contengono Sky is clear come descrizione
         JavaRDD<WeatherDescriptionPojo> clearSkyMonthRDD = selectedMonthRDD.filter(wdp -> wdp.getWeatherCondition().equals("sky is clear"));
 
+     //   System.out.println("clearSkyMonthRDD.count(): " + clearSkyMonthRDD.count());
+
+        //Cancello tutti i POJO che sono fuori da un range orario prestabilito
+        JavaRDD<WeatherDescriptionPojo> inHoursRangeRDD = clearSkyMonthRDD.filter(wdp -> wdp.getDateTime().hourOfDay().compareTo(startHour) >=0 &&
+                wdp.getDateTime().hourOfDay().compareTo(endHour)<=0 );
+
+    //    System.out.println("inHoursRangeRDD.count(): " + inHoursRangeRDD.count());
+
         /*List<WeatherDescriptionPojo> firstTen = clearSkyMonthRDD.take(10);
         firstTen.forEach(System.out::println);*/
 
         //Chiave è la Tupla4(Anno, Città,Mese, giorno del mese), value è 1
-        JavaPairRDD<Tuple4<Integer,String,Integer,Integer>,Integer> keyedYearCityMonthDayRDD = clearSkyMonthRDD.mapToPair(
+        JavaPairRDD<Tuple4<Integer,String,Integer,Integer>,Integer> keyedYearCityMonthDayRDD = inHoursRangeRDD.mapToPair(
                 wdp -> new Tuple2<>(new Tuple4<>
                         (wdp.getDateTime().getYear(), wdp.getCity(), wdp.getDateTime().getMonthOfYear(), wdp.getDateTime().getDayOfMonth()),STATICONE));
 
@@ -112,7 +135,7 @@ public class FirstQuerySolver {
 
         // Cancello tutti gli elementi che NON hanno almeno 12 ore di cielo sereno
         //Logica di filtraggio implementabile secondo criterio a piacere
-        JavaPairRDD<Tuple4<Integer, String, Integer, Integer>, Integer> filteredByClearDayCriteriumRDD = reducedYearCityMonthDayKeyedRDD.filter(wdp-> wdp._2() >= 12);
+        JavaPairRDD<Tuple4<Integer, String, Integer, Integer>, Integer> filteredByClearDayCriteriumRDD = reducedYearCityMonthDayKeyedRDD.filter(wdp-> wdp._2() >= 8);
 
         //Quella che prima era la chiave "Anno,Città,Mese,GiornoDelMese" ora diventa una coppia chiave valore --> <K,V> = <<Anno,città,Mese>, 1>
         JavaPairRDD<Tuple3<Integer, String, Integer>, Integer> reKeyedRDD = filteredByClearDayCriteriumRDD.mapToPair(wdp -> {

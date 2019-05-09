@@ -9,6 +9,15 @@ import utils.CityAttributeParser;
 import java.io.Serializable;
 
 public class WeatherDescriptionPojo implements Serializable {
+
+    private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(DateTimeZone.UTC);
+    private String city;
+    private DateTime dateTime;
+    private String weatherCondition;
+    private DateTimeZone dateTimezone;
+
+
+
     public DateTimeZone getDateTimezone() {
         return dateTimezone;
     }
@@ -22,11 +31,7 @@ public class WeatherDescriptionPojo implements Serializable {
     }
 
 
-    private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(DateTimeZone.UTC);
-    private String city;
-    private DateTime dateTime;
-    private String weatherCondition;
-    private DateTimeZone dateTimezone;
+
 
     public WeatherDescriptionPojo(String city, String dateTime, String weatherCondition) {
         this.city = city;
