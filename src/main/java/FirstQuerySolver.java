@@ -30,14 +30,13 @@ public class FirstQuerySolver {
                 .setMaster("local")
                 .setAppName("First query Solver");
 
-        Logger logger = conf.log();
         JavaSparkContext jsc = new JavaSparkContext(conf);
-
+        jsc.setLogLevel("WARN");
 
         // Load and parse data
         //String path = args[0];
-        //String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
-        String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
+        String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
+       // String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
 
         Iterable<CSVRecord> records;
         Reader in = null;
@@ -91,7 +90,7 @@ public class FirstQuerySolver {
         final double start = System.nanoTime();
 
 
-        JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos);
+        JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos,850);
 
         //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
         Function<WeatherDescriptionPojo,Boolean> filterMarchAprilMay = e-> selectedMonths.contains(e.getDateTime().getMonthOfYear());

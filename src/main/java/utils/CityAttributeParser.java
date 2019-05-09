@@ -13,8 +13,8 @@ import java.util.*;
 
 public class CityAttributeParser {
 
-    //public final static String csvpath = "/home/federico/Scaricati/prj1_dataset/city_attributes.csv";
-    public final static String csvpath = "/Users/antonio/Downloads/prj1_dataset/city_attributes.csv";
+    public final static String csvpath = "/home/federico/Scaricati/prj1_dataset/city_attributes.csv";
+    //public final static String csvpath = "/Users/antonio/Downloads/prj1_dataset/city_attributes.csv";
 
     private Map<String, CityPojo> cities = null;
 
