@@ -5,6 +5,17 @@ networks:
         driver: bridge
     
 services:
+    nifi:
+        image: erreesse/nifi
+        container_name: nifi
+        hostname: nifi
+        networks:
+            - hadoop_network
+        ports:
+            - "5555:5555"
+        stdin_open: true
+        tty: true
+
     master:
         build:
             context: ../docker-images/hdfs-yarn-spark
@@ -16,6 +27,8 @@ services:
         ports:
             - "9870:9870"
             - "8088:8088"
+        depends_on:
+            - nifi
         stdin_open: true
         tty: true
 
