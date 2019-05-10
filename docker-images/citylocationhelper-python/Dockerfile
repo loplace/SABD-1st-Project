@@ -2,10 +2,12 @@
 #
 # docker build -t effeerre/hadoop .
 
-FROM sabbir1cse/ubuntu-python-pip-supervisor
+FROM ubuntu:xenial
 USER root
 
 # dipendenze di timezonefinder
+RUN apt-get update
+RUN apt-get -y install python3-pip
 RUN pip3 install numpy importlib_resources 
 RUN pip3 install geopy 
 

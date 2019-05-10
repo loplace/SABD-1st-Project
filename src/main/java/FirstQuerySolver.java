@@ -177,7 +177,7 @@ public class FirstQuerySolver {
 
         final double delta = (end - start)/1000000000L;
 
-        System.out.printf("Query 1 completed in %f%n seconds\n",delta);
+        System.out.printf("Query 1 completed in %f seconds\n",delta);
 
 
 
