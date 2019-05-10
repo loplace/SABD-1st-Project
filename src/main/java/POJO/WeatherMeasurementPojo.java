@@ -12,6 +12,7 @@ public class WeatherMeasurementPojo implements Serializable {
     private String city;
     private DateTime measuredAt;
     private double measurementValue = 0.0;
+
     private String country;
 
     private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(DateTimeZone.UTC);
@@ -63,5 +64,9 @@ public class WeatherMeasurementPojo implements Serializable {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getCountry() {
+        return country;
     }
 }
