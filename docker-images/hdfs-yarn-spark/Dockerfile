@@ -50,7 +50,6 @@ CMD /usr/local/bootstrap.sh
 
 # # HDFS ports
 EXPOSE 9866 9867 9870 9864 9868 9820 9000
-
 # # Mapred ports
 # EXPOSE 10020 19888
 

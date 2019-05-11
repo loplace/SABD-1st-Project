@@ -27,8 +27,6 @@ services:
         ports:
             - "9870:9870"
             - "8088:8088"
-        depends_on:
-            - nifi
         stdin_open: true
         tty: true
 

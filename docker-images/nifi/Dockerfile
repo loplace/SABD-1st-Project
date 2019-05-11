@@ -16,6 +16,16 @@ ADD config/nifi.properties $NIFI_HOME/conf
 ADD config/flow.xml.gz $NIFI_HOME/conf
 
 
-CMD $NIFI_HOME/bin/nifi.sh start
+RUN mkdir /data; mkdir /data/hdfsconf
+ADD hdfs-config/core-site.xml /data/hdfsconf
+ADD hdfs-config/hdfs-site.xml /data/hdfsconf
+
+ENV DATASET_REPO http://www.acsiciclismoabruzzo.it/sabd/
+WORKDIR /data
+RUN wget $DATASET_REPO/city_attributes.csv; wget $DATASET_REPO/temperature.csv; wget $DATASET_REPO/weather_description.csv; wget $DATASET_REPO/pressure.csv; wget $DATASET_REPO/humidity.csv; 
+
+# trucco per tenere attivo il container dopo lo start
+# exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
+CMD $NIFI_HOME/bin/nifi.sh start ; exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
 
 EXPOSE 5555
