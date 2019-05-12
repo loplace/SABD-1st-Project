@@ -8,11 +8,11 @@ tz_port = os.getenv('TZ_PORT', 8888)
 
 def retrieveTZ(latitude,longitude):
     tf = TimezoneFinder(in_memory=True)
-    tzresult = tf.timezone_at(lng=longitude, lat=latitude)
+    tzresult = tf.timezone_at(lng=longitude, latitude=latitude)
     return tzresult
 
 def retrieveNation(latitude,longitude):
-    geolocator = Nominatim()
+    geolocator = Nominatim(timeout=None)
     param = str(latitude)+","+ str(longitude)
     location = geolocator.reverse(param,language = 'en')
     rawString = location.address

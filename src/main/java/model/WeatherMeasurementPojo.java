@@ -1,5 +1,9 @@
 package model;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -7,12 +11,19 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
 
+@ToString
 public class WeatherMeasurementPojo implements Serializable, CityKey {
 
+    @Getter @Setter
     private String city;
+
+    @Getter @Setter
     private DateTime measuredAt;
+
+    @Getter @Setter
     private double measurementValue = 0.0;
 
+    @Getter @Setter
     private String country;
 
     private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(DateTimeZone.UTC);
@@ -24,49 +35,9 @@ public class WeatherMeasurementPojo implements Serializable, CityKey {
         this.measurementValue = measurementValue;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public DateTime getMeasuredAt() {
-        return measuredAt;
-    }
-
-    public void setMeasuredAt(DateTime measuredAt) {
-        this.measuredAt = measuredAt;
-    }
-
-    public double getMeasurementValue() {
-        return measurementValue;
-    }
-
-    public void setMeasurementValue(double measurementValue) {
-        this.measurementValue = measurementValue;
-    }
-
-    public static DateTime formatDate (String date){
+    public static DateTime formatDate(String date){
 
         return DateTime.parse(date,formatter);
     }
 
-    @Override
-    public String toString() {
-        return "WeatherMeasurementPojo{" +
-                "city='" + city + '\'' +
-                ", measuredAt=" + measuredAt +
-                ", measurementValue=" + measurementValue +
-                '}';
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCountry() {
-        return country;
-    }
 }

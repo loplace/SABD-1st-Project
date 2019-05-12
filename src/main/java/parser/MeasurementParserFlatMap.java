@@ -22,8 +22,7 @@ public class MeasurementParserFlatMap implements FlatMapFunction<String, Weather
     }
 
     @Override
-    public Iterator<WeatherMeasurementPojo> call(String line) throws Exception {
-
+    public Iterator<WeatherMeasurementPojo> call(String line) {
         MeasurementParser.setCitiesMap(citiesMap);
 
         return MeasurementParser.parseLine(header,line);

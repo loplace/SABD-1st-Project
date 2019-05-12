@@ -17,6 +17,7 @@ import org.joda.time.LocalTime;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
+import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
 
 public class FirstQuerySolver {
@@ -48,8 +49,9 @@ public class FirstQuerySolver {
 
         // Load and parse data
         //String path = args[0];
-        String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
-       // String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
+        //String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
+        //String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
+        String path = AppConfiguration.getProperty("dataset.csv.weatherdesc");
 
         Iterable<CSVRecord> records;
         Reader in = null;

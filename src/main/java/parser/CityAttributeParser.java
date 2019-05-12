@@ -3,6 +3,7 @@ package parser;
 import model.CityModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import utils.configuration.AppConfiguration;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,8 +13,8 @@ import java.util.*;
 
 public class CityAttributeParser {
 
-    public final static String csvpath = "/home/federico/Scaricati/prj1_dataset/city_attributes.csv";
-    //public final static String csvpath = "/Users/antonio/Downloads/prj1_dataset/city_attributes.csv";
+    public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes");
+
 
     private Map<String, CityModel> cities = null;
 

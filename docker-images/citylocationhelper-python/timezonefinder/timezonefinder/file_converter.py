@@ -158,11 +158,11 @@ def x_shortcut(lng):
     return floor((lng + 180) * NR_SHORTCUTS_PER_LNG)
 
 
-def y_shortcut(lat):
-    # lower y (=lat) means higher y shortcut!!! 0 (90deg lat) -> 180 (-90deg)
-    # if lat < -90 or lat >= 90:
-    # raise ValueError('this latitude is out of bounds', lat)
-    return floor((90 - lat) * NR_SHORTCUTS_PER_LAT)
+def y_shortcut(latitude):
+    # lower y (=latitude) means higher y shortcut!!! 0 (90deg latitude) -> 180 (-90deg)
+    # if latitude < -90 or latitude >= 90:
+    # raise ValueError('this latitude is out of bounds', latitude)
+    return floor((90 - latitude) * NR_SHORTCUTS_PER_LAT)
 
 
 def big_zone(xmax, xmin, ymax, ymin):
@@ -515,14 +515,14 @@ def compile_binaries():
 
         step = 1 / NR_SHORTCUTS_PER_LAT
         # print('checking the latitudes')
-        for lat in latitudes_to_check(ymax, ymin):
-            # print(lat)
-            # print(coordinate_to_longlong(lat))
+        for latitude in latitudes_to_check(ymax, ymin):
+            # print(latitude)
+            # print(coordinate_to_longlong(latitude))
             # print(y_longs)
-            # print(x_intersections(coordinate_to_longlong(lat), x_longs, y_longs))
+            # print(x_intersections(coordinate_to_longlong(latitude), x_longs, y_longs))
             # raise ValueError
             intersects = sorted([int2coord(x) for x in
-                                 x_intersections(coord2int(lat), x_longs, y_longs)])
+                                 x_intersections(coord2int(latitude), x_longs, y_longs)])
             # print(intersects)
 
             nr_of_intersects = len(intersects)
@@ -538,19 +538,19 @@ def compile_binaries():
                 if intersection_in == intersection_out:
                     # the polygon has a point exactly on the border of a shortcut zone here!
                     # only select the top shortcut if it is actually inside the polygon (point a little up is inside)
-                    if contained(coord2int(intersection_in), coord2int(lat) + 1, x_longs,
+                    if contained(coord2int(intersection_in), coord2int(latitude) + 1, x_longs,
                                  y_longs):
-                        shortcuts_for_line.add((x_shortcut(intersection_in), y_shortcut(lat) - 1))
+                        shortcuts_for_line.add((x_shortcut(intersection_in), y_shortcut(latitude) - 1))
                     # the bottom shortcut is always selected
-                    shortcuts_for_line.add((x_shortcut(intersection_in), y_shortcut(lat)))
+                    shortcuts_for_line.add((x_shortcut(intersection_in), y_shortcut(latitude)))
 
                 else:
                     # add all the shortcuts for the whole found area of intersection
-                    possible_y_shortcut = y_shortcut(lat)
+                    possible_y_shortcut = y_shortcut(latitude)
 
                     # both shortcuts should only be selected when the polygon doesnt stays on the border
                     middle = intersection_in + (intersection_out - intersection_in) / 2
-                    if contained(coord2int(middle), coord2int(lat) + 1, x_longs,
+                    if contained(coord2int(middle), coord2int(latitude) + 1, x_longs,
                                  y_longs):
                         while intersection_in < intersection_out:
                             possible_longitudes.append(intersection_in)
@@ -717,7 +717,7 @@ def compile_binaries():
     end_time = datetime.now()
     print('calculating the shortcuts took:', end_time - start_time, '\n')
 
-    # there are two floats per coordinate (lng, lat)
+    # there are two floats per coordinate (lng, latitude)
     nr_of_floats = 2 * sum(all_lengths)
 
     # write number of entries in shortcut field (x,y)

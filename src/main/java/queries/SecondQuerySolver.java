@@ -13,6 +13,7 @@ import parser.MeasurementParserFlatMap;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
+import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
 import java.util.List;
 
@@ -37,14 +38,10 @@ public class SecondQuerySolver {
 
         // Load and parse data
         //String path = args[0];
-        String pathTemperature = "/home/federico/Scaricati/prj1_dataset/temperature.csv";
-        String pathPressure = "/home/federico/Scaricati/prj1_dataset/pressure.csv";
-        String pathHumidity = "/home/federico/Scaricati/prj1_dataset/humidity.csv";
 
-        /*
-        String pathTemperature = "/Users/antonio/Downloads/prj1_dataset/temperature.csv";
-        String pathPressure = "/Users/antonio/Downloads/prj1_dataset/pressure.csv";
-        String pathHumidity = "/Users/antonio/Downloads/prj1_dataset/humidity.csv"; */
+        String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
+        String pathPressure = AppConfiguration.getProperty("dataset.csv.pressure");
+        String pathHumidity = AppConfiguration.getProperty("dataset.csv.humidity");
 
      //   TemperatureValidator temperatureValidator = new TemperatureValidator();
      //   temperatureValidator.preprocessTemperature(pathTemperature);

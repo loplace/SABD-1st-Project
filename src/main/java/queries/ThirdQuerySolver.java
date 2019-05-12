@@ -12,6 +12,7 @@ import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
 import parser.MeasurementParserFlatMap;
 import scala.Tuple2;
+import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
 
 import java.io.*;
@@ -27,7 +28,7 @@ public class ThirdQuerySolver {
     public final static LocalTime startHour = new LocalTime("12:00:00");
     public final static LocalTime endHour = new LocalTime("15:00:00");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
 
         SparkConf conf = new SparkConf()
@@ -38,13 +39,7 @@ public class ThirdQuerySolver {
         jsc.setLogLevel("WARN");
 
         // Load and parse data
-        //String path = args[0];
-        /*String pathTemperature = "/home/federico/Scaricati/prj1_dataset/temperature.csv";
-        String pathPressure = "/home/federico/Scaricati/prj1_dataset/pressure.csv";
-        String pathHumidity = "/home/federico/Scaricati/prj1_dataset/humidity.csv";
-*/
-        // String pathTemperature = "/Users/antonio/Downloads/prj1_dataset/temperature.csv";
-        String pathTemperature = "/home/federico/Scaricati/prj1_dataset/temperature.csv";
+        String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
 
    /*     Reader temperatureReader = null;
 

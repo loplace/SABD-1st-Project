@@ -138,7 +138,7 @@ class TimezoneFinder:
 
     def polygon_ids_of_shortcut(self, x=0, y=0):
         # get the address of the first entry in this shortcut
-        # offset: 180 * number of shortcuts per lat degree * 2bytes = entries per column of x shortcuts
+        # offset: 180 * number of shortcuts per latitude degree * 2bytes = entries per column of x shortcuts
         # shortcuts are stored: (0,0) (0,1) (0,2)... (1,0)...
         self.shortcuts_entry_amount.seek(NR_LAT_SHORTCUTS * NR_BYTES_H * x + NR_BYTES_H * y)
         nr_of_entries = unpack(DTYPE_FORMAT_H, self.shortcuts_entry_amount.read(NR_BYTES_H))[0]
@@ -297,21 +297,21 @@ class TimezoneFinder:
 
         return sorted_polygon_id_list, sorted_zone_id_list, False
 
-    def closest_timezone_at(self, *, lat, lng, delta_degree=1, exact_computation=False, return_distances=False,
+    def closest_timezone_at(self, *, latitude, lng, delta_degree=1, exact_computation=False, return_distances=False,
                             force_evaluation=False):
         """
         This function searches for the closest polygon in the surrounding shortcuts.
         Make sure that the point does not lie within a polygon (for that case the algorithm is simply wrong!)
         Note that the algorithm won't find the closest polygon when it's on the 'other end of earth'
         (it can't search beyond the 180 deg lng border yet)
-        This checks all the polygons within [delta_degree] degree lng and lat/
-        Keep in mind that x degrees lat are not the same distance apart than x degree lng!
+        This checks all the polygons within [delta_degree] degree lng and latitude/
+        Keep in mind that x degrees latitude are not the same distance apart than x degree lng!
         This is also the reason why there could still be a closer polygon even though you got a result already.
         In order to make sure to get the closest polygon, you should increase the search radius
         until you get a result and then increase it once more (and take that result).
         This should only make a difference in really rare cases however.
         :param lng: longitude of the point in degree
-        :param lat: latitude in degree
+        :param latitude: latitude in degree
         :param delta_degree: the 'search radius' in degree
         :param exact_computation: when enabled the distance to every polygon edge is computed (way more complicated),
         instead of only evaluating the distances to all the vertices (=default).
@@ -326,28 +326,28 @@ class TimezoneFinder:
             coords = self.coords_of(polygon_nr)
             nr_points = len(coords[0])
             empty_array = empty([2, nr_points], dtype=DTYPE_FORMAT_F_NUMPY)
-            return distance_to_polygon_exact(lng, lat, nr_points, coords, empty_array)
+            return distance_to_polygon_exact(lng, latitude, nr_points, coords, empty_array)
 
         def normal_routine(polygon_nr):
             coords = self.coords_of(polygon_nr)
             nr_points = len(coords[0])
-            return distance_to_polygon(lng, lat, nr_points, coords)
+            return distance_to_polygon(lng, latitude, nr_points, coords)
 
-        lng, lat = rectify_coordinates(lng, lat)
+        lng, latitude = rectify_coordinates(lng, latitude)
 
         # transform point X into cartesian coordinates
         current_closest_id = None
-        central_x_shortcut, central_y_shortcut = coord2shortcut(lng, lat)
+        central_x_shortcut, central_y_shortcut = coord2shortcut(lng, latitude)
 
         lng = radians(lng)
-        lat = radians(lat)
+        latitude = radians(latitude)
 
         possible_polygons = []
 
-        # there are 2 shortcuts per 1 degree lat, so to cover 1 degree two shortcuts (rows) have to be checked
+        # there are 2 shortcuts per 1 degree latitude, so to cover 1 degree two shortcuts (rows) have to be checked
         # the highest shortcut is 0
         top = max(central_y_shortcut - NR_SHORTCUTS_PER_LAT * delta_degree, 0)
-        # the lowest shortcut is 359 (= 2 shortcuts per 1 degree lat)
+        # the lowest shortcut is 359 (= 2 shortcuts per 1 degree latitude)
         bottom = min(central_y_shortcut + NR_SHORTCUTS_PER_LAT * delta_degree, 359)
 
         # the most left shortcut is 0
@@ -420,7 +420,7 @@ class TimezoneFinder:
             return timezone_names[current_closest_id], distances, [timezone_names[x] for x in ids]
         return timezone_names[current_closest_id]
 
-    def timezone_at(self, *, lng, lat):
+    def timezone_at(self, *, lng, latitude):
         """
         this function looks up in which polygons the point could be included in
         to speed things up there are shortcuts being used (stored in a binary file)
@@ -429,15 +429,15 @@ class TimezoneFinder:
         not be inside the polygon (for example when there is only one timezone nearby)
         if you want to make sure a point is really inside a timezone use 'certain_timezone_at'
         :param lng: longitude of the point in degree (-180 to 180)
-        :param lat: latitude in degree (90 to -90)
+        :param latitude: latitude in degree (90 to -90)
         :return: the timezone name of a matching polygon or None
         """
-        lng, lat = rectify_coordinates(lng, lat)
+        lng, latitude = rectify_coordinates(lng, latitude)
         # x = longitude  y = latitude  both converted to 8byte int
         x = coord2int(lng)
-        y = coord2int(lat)
+        y = coord2int(latitude)
 
-        shortcut_id_x, shortcut_id_y = coord2shortcut(lng, lat)
+        shortcut_id_x, shortcut_id_y = coord2shortcut(lng, latitude)
         self.shortcuts_unique_id.seek(
             (180 * NR_SHORTCUTS_PER_LAT * NR_BYTES_H * shortcut_id_x + NR_BYTES_H * shortcut_id_y))
         try:
@@ -488,22 +488,22 @@ class TimezoneFinder:
             # if no other polygon has been matched beforehand.
             raise ValueError('BUG: this statement should never be reached. Please open up an issue on Github!')
 
-    def certain_timezone_at(self, *, lng, lat):
+    def certain_timezone_at(self, *, lng, latitude):
         """
         this function looks up in which polygon the point certainly is included
         this is much slower than 'timezone_at'!
         :param lng: longitude of the point in degree
-        :param lat: latitude in degree
+        :param latitude: latitude in degree
         :return: the timezone name of the polygon the point is included in or None
         """
 
-        lng, lat = rectify_coordinates(lng, lat)
-        shortcut_id_x, shortcut_id_y = coord2shortcut(lng, lat)
+        lng, latitude = rectify_coordinates(lng, latitude)
+        shortcut_id_x, shortcut_id_y = coord2shortcut(lng, latitude)
         possible_polygons = self.polygon_ids_of_shortcut(shortcut_id_x, shortcut_id_y)
 
         # x = longitude  y = latitude  both converted to 8byte int
         x = coord2int(lng)
-        y = coord2int(lat)
+        y = coord2int(latitude)
 
         # check if the point is actually included in one of the polygons
         for polygon_nr in possible_polygons:
@@ -534,7 +534,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='parse training parameters')
     parser.add_argument('lng', type=float, help='longitude to be queried')
-    parser.add_argument('lat', type=float, help='latitude to be queried')
+    parser.add_argument('latitude', type=float, help='latitude to be queried')
     parser.add_argument('-v', action='store_true', help='verbosity flag')
     parser.add_argument('-f', '--function', type=int, choices=[0, 1], default=0,
                         help='function to be called. 0: timezone_at(...) 1: certain_timezone_at(...)')
@@ -543,9 +543,9 @@ if __name__ == '__main__':
     parsed_args = parser.parse_args()
     tf = TimezoneFinder()
     functions = [tf.timezone_at, tf.certain_timezone_at]
-    tz = functions[parsed_args.function](lng=parsed_args.lng, lat=parsed_args.lat)
+    tz = functions[parsed_args.function](lng=parsed_args.lng, latitude=parsed_args.latitude)
     if parsed_args.v:
-        print('Looking for TZ at lat=', parsed_args.lat, ' lng=', parsed_args.lng)
+        print('Looking for TZ at latitude=', parsed_args.latitude, ' lng=', parsed_args.lng)
         print('Function:', ['timezone_at()', 'certain_timezone_at()'][parsed_args.function])
         print('Timezone=', tz)
     else:

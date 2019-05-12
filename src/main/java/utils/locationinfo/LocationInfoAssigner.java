@@ -1,7 +1,6 @@
 package utils.locationinfo;
 
 import model.CityModel;
-import utils.locationinfo.CityLocationRetriever;
 
 import java.util.Map;
 
@@ -13,7 +12,7 @@ public class LocationInfoAssigner {
         for(Map.Entry<String, CityModel> entry:cityPojoMap.entrySet()){
 
             CityModel currentCity = entry.getValue();
-            String locationInfo = CityLocationRetriever.retrieveLocationInfo(currentCity.getLat(),currentCity.getLon());
+            String locationInfo = CityLocationRetriever.retrieveLocationInfo(currentCity.getLatitude(),currentCity.getLongitude());
             String[] tokens = locationInfo.split(";");
             String timezone = tokens[0];
             String country = tokens[1];

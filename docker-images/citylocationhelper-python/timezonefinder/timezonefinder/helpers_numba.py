@@ -48,7 +48,7 @@ def inside_polygon(x, y, coordinates):
         delta_y_max * delta_x_max <= 65x10^17
 
     So these numbers need up to log_2(65 x10^17) ~ 63 bits to be represented! Even though values this big should never
-     occur in practice (timezone polygons do not span the whole lng lat coordinate space),
+     occur in practice (timezone polygons do not span the whole lng latitude coordinate space),
      32bit accuracy hence is not safe to use here!
      Python 2.2 automatically uses the appropriate int data type preventing overflow
      (cf. https://www.python.org/dev/peps/pep-0237/),
@@ -162,7 +162,7 @@ def distance_to_point_on_equator(lng_rad, lat_rad, lng_rad_p1):
     uses the simplified haversine formula for this special case (lat_p1 = 0)
     :param lng_rad: the longitude of the point in radians
     :param lat_rad: the latitude of the point
-    :param lng_rad_p1: the latitude of the point1 on the equator (lat=0)
+    :param lng_rad_p1: the latitude of the point1 on the equator (latitude=0)
     :return: distance between the point and p1 (lng_rad_p1,0) in km
     this is only an approximation since the earth is not a real sphere
     """
@@ -191,13 +191,13 @@ def haversine(lng_p1, lat_p1, lng_p2, lat_p2):
 def compute_min_distance(lng_rad, lat_rad, p0_lng, p0_lat, pm1_lng, pm1_lat, p1_lng, p1_lat):
     """
     :param lng_rad: lng of px in radians
-    :param lat_rad: lat of px in radians
+    :param lat_rad: latitude of px in radians
     :param p0_lng: lng of p0 in radians
-    :param p0_lat: lat of p0 in radians
+    :param p0_lat: latitude of p0 in radians
     :param pm1_lng: lng of pm1 in radians
-    :param pm1_lat: lat of pm1 in radians
+    :param pm1_lat: latitude of pm1 in radians
     :param p1_lng: lng of p1 in radians
-    :param p1_lat: lat of p1 in radians
+    :param p1_lat: latitude of p1 in radians
     :return: shortest distance between pX and the polygon section (pm1---p0---p1) in radians
     """
 
@@ -296,17 +296,17 @@ def distance_to_polygon(lng_rad, lat_rad, nr_points, points):
 
 # @cc.export('coord2shortcut', dtype_2int_tuple(f8, f8))
 @njit(dtype_2int_tuple(f8, f8), cache=True)
-def coord2shortcut(lng, lat):
-    return int(floor((lng + 180))), int(floor((90 - lat) * 2))
+def coord2shortcut(lng, latitude):
+    return int(floor((lng + 180))), int(floor((90 - latitude) * 2))
 
 
 # @cc.export('rectify_coordinates', dtype_2float_tuple(f8, f8))
 @njit(dtype_2float_tuple(f8, f8), cache=True)
-def rectify_coordinates(lng, lat):
-    if lng > 180.0 or lng < -180.0 or lat > 90.0 or lat < -90.0:
+def rectify_coordinates(lng, latitude):
+    if lng > 180.0 or lng < -180.0 or latitude > 90.0 or latitude < -90.0:
         raise ValueError('The coordinates should be given in degrees. They are out ouf bounds.')
 
-    # coordinates on the rightmost (lng=180) or lowest (lat=-90) border of the coordinate system
+    # coordinates on the rightmost (lng=180) or lowest (latitude=-90) border of the coordinate system
     # are not included in the shortcut lookup system
     # always (only) the "top" and "left" borders belong to a shortcut
     if lng == 180.0:
@@ -315,13 +315,13 @@ def rectify_coordinates(lng, lat):
         # it however equals lng=0.0 (earth is a sphere)
         lng = 0.0
 
-    if lat == -90.0:
+    if latitude == -90.0:
         # a latitude of -90.0 (=exact south pole) corresponds to just one single point on earth
         # and is not allowed, because bottom border of a shortcut is already considered to lie within the next shortcut
         # it has the same timezones as the points with a slightly higher latitude
-        lat += INT2COORD_FACTOR  # adjust by the smallest possible amount
+        latitude += INT2COORD_FACTOR  # adjust by the smallest possible amount
 
-    return lng, lat
+    return lng, latitude
 
 
 @njit(cache=True)
