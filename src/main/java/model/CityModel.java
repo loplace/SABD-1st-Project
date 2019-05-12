@@ -1,8 +1,8 @@
-package POJO;
+package model;
 
 import java.io.Serializable;
 
-public class CityPojo implements Serializable {
+public class CityModel implements Serializable, CityKey {
 
     String city;
     String timezone;
@@ -10,7 +10,7 @@ public class CityPojo implements Serializable {
     double lat;
     double lon;
 
-    public CityPojo(String city, double lat, double lon) {
+    public CityModel(String city, double lat, double lon) {
         this.city = city;
         this.lat = lat;
         this.lon = lon;
@@ -59,7 +59,7 @@ public class CityPojo implements Serializable {
 
     @Override
     public String toString() {
-        return "CityPojo{" +
+        return "CityModel{" +
                 "city='" + city + '\'' +
                 ", timezone='" + timezone + '\'' +
                 ", lat=" + lat +

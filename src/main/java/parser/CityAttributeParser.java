@@ -1,7 +1,6 @@
-package utils;
+package parser;
 
-import POJO.CityPojo;
-import POJO.WeatherDescriptionPojo;
+import model.CityModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +15,7 @@ public class CityAttributeParser {
     //public final static String csvpath = "/home/federico/Scaricati/prj1_dataset/city_attributes.csv";
     public final static String csvpath = "/Users/antonio/Downloads/prj1_dataset/city_attributes.csv";
 
-    private Map<String, CityPojo> cities = null;
+    private Map<String, CityModel> cities = null;
 
     public CityAttributeParser() {
         this.cities = new HashMap<>();
@@ -45,7 +44,7 @@ public class CityAttributeParser {
             String latitude = record.get("Latitude");
             String longitude = record.get("Longitude");
 
-            CityPojo newCity = new CityPojo(cityName,Double.parseDouble(latitude),Double.parseDouble(longitude));
+            CityModel newCity = new CityModel(cityName,Double.parseDouble(latitude),Double.parseDouble(longitude));
             this.cities.put(cityName,newCity);
 
         }
@@ -55,13 +54,13 @@ public class CityAttributeParser {
 
     public void printCities(){
 
-        for(Map.Entry<String,CityPojo> entry:this.cities.entrySet()){
+        for(Map.Entry<String, CityModel> entry:this.cities.entrySet()){
 
             System.out.println(entry.getKey() + "/" + entry.getValue());
         }
     }
 
-    public Map<String, CityPojo> getCities() {
+    public Map<String, CityModel> getCities() {
 
         return cities;
     }

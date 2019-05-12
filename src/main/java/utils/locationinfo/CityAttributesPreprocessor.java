@@ -1,5 +1,7 @@
-import utils.CityAttributeParser;
-import utils.LocationInfoAssigner;
+package utils.locationinfo;
+
+import parser.CityAttributeParser;
+import utils.locationinfo.LocationInfoAssigner;
 
 import java.io.IOException;
 

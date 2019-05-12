@@ -1,5 +1,7 @@
-import POJO.CityPojo;
-import POJO.WeatherMeasurementPojo;
+package queries;
+
+import model.CityModel;
+import model.WeatherMeasurementPojo;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.spark.SparkConf;
@@ -10,6 +12,8 @@ import org.apache.spark.util.StatCounter;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
+import parser.validators.TemperatureValidator;
+import utils.locationinfo.CityAttributesPreprocessor;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,7 +28,7 @@ public class SecondQuerySolver {
 
         SparkConf conf = new SparkConf()
                 .setMaster("local")
-                .setAppName("First query Solver");
+                .setAppName("Second query Solver");
 
         JavaSparkContext jsc = new JavaSparkContext(conf);
         jsc.setLogLevel("WARN");
@@ -32,13 +36,17 @@ public class SecondQuerySolver {
 
         // Load and parse data
         //String path = args[0];
-        /*String pathTemperature = "/home/federico/Scaricati/prj1_dataset/temperature.csv";
+        String pathTemperature = "/home/federico/Scaricati/prj1_dataset/temperature.csv";
         String pathPressure = "/home/federico/Scaricati/prj1_dataset/pressure.csv";
         String pathHumidity = "/home/federico/Scaricati/prj1_dataset/humidity.csv";
-*/
+
+        /*
         String pathTemperature = "/Users/antonio/Downloads/prj1_dataset/temperature.csv";
         String pathPressure = "/Users/antonio/Downloads/prj1_dataset/pressure.csv";
-        String pathHumidity = "/Users/antonio/Downloads/prj1_dataset/humidity.csv";
+        String pathHumidity = "/Users/antonio/Downloads/prj1_dataset/humidity.csv"; */
+
+        TemperatureValidator temperatureValidator = new TemperatureValidator();
+        temperatureValidator.preprocessTemperature(pathTemperature);
 
         Reader temperatureReader = null;
         Reader pressionReader = null;
@@ -54,7 +62,7 @@ public class SecondQuerySolver {
 
         //new, use preprocessor to grab city ID for correct UTC
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
-        Map<String, CityPojo> cities = cityAttributesPreprocessor.process().getCities();
+        Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
 
         List<WeatherMeasurementPojo> humidities = csvToMeasurementPojo(humidityReader,cities);
         List<WeatherMeasurementPojo> pressures = csvToMeasurementPojo(pressionReader,cities);
@@ -125,7 +133,7 @@ public class SecondQuerySolver {
             });
     }
 
-    private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityPojo> cities) throws IOException {
+    private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
         List<WeatherMeasurementPojo> measurements = new ArrayList<>();
         Iterable<CSVRecord> records;
         Set<String> headers;
@@ -150,9 +158,9 @@ public class SecondQuerySolver {
                     WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(field, dateTime, measurement);
 
                     String key = wmp.getCity();
-                    CityPojo cityPojo = cities.get(key);
-                    if (cityPojo != null){
-                        String country = cityPojo.getCountry();
+                    CityModel cityModel = cities.get(key);
+                    if (cityModel != null){
+                        String country = cityModel.getCountry();
                         wmp.setCountry(country);
                     }
 

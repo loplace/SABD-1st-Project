@@ -1,4 +1,4 @@
-package utils;
+package kMeans;
 
 
 public class CSVtoCity {

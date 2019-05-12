@@ -1,4 +1,4 @@
-package POJO;
+package model;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
 
-public class WeatherMeasurementPojo implements Serializable {
+public class WeatherMeasurementPojo implements Serializable, CityKey {
 
     private String city;
     private DateTime measuredAt;

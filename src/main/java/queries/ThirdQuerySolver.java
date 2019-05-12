@@ -1,5 +1,7 @@
-import POJO.CityPojo;
-import POJO.WeatherMeasurementPojo;
+package queries;
+
+import model.CityModel;
+import model.WeatherMeasurementPojo;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.spark.SparkConf;
@@ -9,6 +11,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
 import scala.Tuple2;
+import utils.locationinfo.CityAttributesPreprocessor;
 
 import java.io.*;
 import java.util.*;
@@ -51,7 +54,7 @@ public class ThirdQuerySolver {
 
         //new, use preprocessor to grab city ID for correct UTC
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
-        Map<String, CityPojo> cities = cityAttributesPreprocessor.process().getCities();
+        Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
 
         List<WeatherMeasurementPojo> temperatures = csvToMeasurementPojo(temperatureReader,cities);
         
@@ -142,7 +145,7 @@ public class ThirdQuerySolver {
     }
 
 
-    private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityPojo> cities) throws IOException {
+    private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
         List<WeatherMeasurementPojo> measurements = new ArrayList<>();
         Iterable<CSVRecord> records;
         Set<String> headers;
@@ -164,9 +167,9 @@ public class ThirdQuerySolver {
                     WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(field, dateTime, measurement);
 
                     String key = wmp.getCity();
-                    CityPojo cityPojo = cities.get(key);
-                    if (cityPojo != null){
-                        String country = cityPojo.getCountry();
+                    CityModel cityModel = cities.get(key);
+                    if (cityModel != null){
+                        String country = cityModel.getCountry();
                         wmp.setCountry(country);
                     }
                     measurements.add(wmp);

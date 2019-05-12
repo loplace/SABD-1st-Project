@@ -1,17 +1,18 @@
-package utils;
+package utils.locationinfo;
 
-import POJO.CityPojo;
+import model.CityModel;
+import utils.locationinfo.CityLocationRetriever;
 
 import java.util.Map;
 
 public class LocationInfoAssigner {
 
 
-    public static void locationInfoAssign(Map<String, CityPojo> cityPojoMap) {
+    public static void locationInfoAssign(Map<String, CityModel> cityPojoMap) {
 
-        for(Map.Entry<String,CityPojo> entry:cityPojoMap.entrySet()){
+        for(Map.Entry<String, CityModel> entry:cityPojoMap.entrySet()){
 
-            CityPojo currentCity = entry.getValue();
+            CityModel currentCity = entry.getValue();
             String locationInfo = CityLocationRetriever.retrieveLocationInfo(currentCity.getLat(),currentCity.getLon());
             String[] tokens = locationInfo.split(";");
             String timezone = tokens[0];

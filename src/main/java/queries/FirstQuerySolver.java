@@ -1,11 +1,12 @@
+package queries;
+
 import java.io.*;
 import java.util.*;
 
-import POJO.CityPojo;
-import POJO.WeatherDescriptionPojo;
+import model.CityModel;
+import model.WeatherDescriptionPojo;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.Level;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -13,10 +14,10 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.joda.time.LocalTime;
-import org.slf4j.Logger;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
+import utils.locationinfo.CityAttributesPreprocessor;
 
 public class FirstQuerySolver {
 
@@ -62,9 +63,11 @@ public class FirstQuerySolver {
             ex.printStackTrace();
         }
 
+
+
         //new, use preprocessor to grab city ID for correct UTC
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
-        Map<String, CityPojo> cities = cityAttributesPreprocessor.process().getCities();
+        Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
 
         records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
         headers = records.iterator().next().toMap().keySet();
@@ -86,9 +89,9 @@ public class FirstQuerySolver {
                     WeatherDescriptionPojo weatherDescriptionPojo = new WeatherDescriptionPojo(field, dateTime, description);
 
                     String key = weatherDescriptionPojo.getCity();
-                    CityPojo cityPojo = cities.get(key);
-                    if (cityPojo != null){
-                        String citytimezone = cityPojo.getTimezone();
+                    CityModel cityModel = cities.get(key);
+                    if (cityModel != null){
+                        String citytimezone = cityModel.getTimezone();
                         weatherDescriptionPojo.setDateTimezone(citytimezone);
                     }
 

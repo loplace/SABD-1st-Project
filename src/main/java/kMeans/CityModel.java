@@ -1,4 +1,4 @@
-package utils;
+package kMeans;
 
 import java.io.Serializable;
 

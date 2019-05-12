@@ -1,14 +1,13 @@
-package POJO;
+package model;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import utils.CityAttributeParser;
 
 import java.io.Serializable;
 
-public class WeatherDescriptionPojo implements Serializable {
+public class WeatherDescriptionPojo implements Serializable, CityKey {
 
     private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(DateTimeZone.UTC);
     private String city;
