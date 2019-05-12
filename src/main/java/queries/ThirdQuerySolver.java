@@ -10,6 +10,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
+import parser.MeasurementParserFlatMap;
 import scala.Tuple2;
 import utils.locationinfo.CityAttributesPreprocessor;
 
@@ -42,25 +43,34 @@ public class ThirdQuerySolver {
         String pathPressure = "/home/federico/Scaricati/prj1_dataset/pressure.csv";
         String pathHumidity = "/home/federico/Scaricati/prj1_dataset/humidity.csv";
 */
-        String pathTemperature = "/Users/antonio/Downloads/prj1_dataset/temperature.csv";
+        // String pathTemperature = "/Users/antonio/Downloads/prj1_dataset/temperature.csv";
+        String pathTemperature = "/home/federico/Scaricati/prj1_dataset/temperature.csv";
 
-        Reader temperatureReader = null;
+   /*     Reader temperatureReader = null;
 
         try {
             temperatureReader = new FileReader(pathTemperature);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
-        }
+        } */
 
         //new, use preprocessor to grab city ID for correct UTC
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
         Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
 
-        List<WeatherMeasurementPojo> temperatures = csvToMeasurementPojo(temperatureReader,cities);
-        
+        JavaRDD<String> csvTemperatureData = jsc.textFile(pathTemperature);
+        String headerTemperature = csvTemperatureData.first();
+        JavaRDD<String> noheaderTemperatureRDD = csvTemperatureData.filter(row -> !row.equals(headerTemperature));
+
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = noheaderTemperatureRDD.flatMap(
+                new MeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
+        );
+
+       // List<WeatherMeasurementPojo> temperatures = csvToMeasurementPojo(temperatureReader,cities);
+
         final double start = System.nanoTime();
 
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = jsc.parallelize(temperatures,850);
+       // JavaRDD<WeatherMeasurementPojo> temperaturesRDD = jsc.parallelize(temperatures,850);
 
         JavaRDD<WeatherMeasurementPojo> tempPer2016RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2016);
         JavaRDD<WeatherMeasurementPojo> tempPer2017RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2017);
