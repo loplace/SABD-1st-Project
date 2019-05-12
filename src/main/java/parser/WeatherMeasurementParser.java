@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MeasurementParser {
+public class WeatherMeasurementParser {
 
         private static Map<String, CityModel> citiesMap;
 
@@ -27,7 +27,6 @@ public class MeasurementParser {
 
             if (noHeaderItems == noTokensItems) {
 
-
                 for (int i = 1; i < noTokensItems; i++) {
 
                     String dateTime = tokens[0];
@@ -43,13 +42,10 @@ public class MeasurementParser {
                         if (citiesMap!=null) {
                             wmp.setCountry(citiesMap.get(cityName).getCountry());
                         }
-
                         result.add(wmp);
                     }
-
                 }
             }
-
             return result.iterator();
         }
 

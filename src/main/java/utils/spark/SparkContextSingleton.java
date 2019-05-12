@@ -21,9 +21,12 @@ public class SparkContextSingleton {
     private SparkContextSingleton(String local) {
         SparkConf conf = new SparkConf().setAppName("Query").set("spark.hadoop.validateOutputSpecs", "false");
 
-        if (local.equals("local"))
-            conf.setMaster("local[*]");
+        if (local.equals("local")) {
+            //conf.setMaster("local[*]");
+            conf.setMaster("local");
+        }
         sc = new JavaSparkContext(conf);
+        sc.setLogLevel("WARN");
     }
 
     public JavaSparkContext getContext() {

@@ -9,7 +9,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
-import parser.MeasurementParserFlatMap;
+import parser.WeatherRDDLoader;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
@@ -28,12 +28,12 @@ public class SecondQuerySolver {
     public static void main(String[] args) throws IOException {
 
 
-        SparkConf conf = new SparkConf()
+        /*SparkConf conf = new SparkConf()
                 .setMaster("local")
                 .setAppName("Second query Solver");
 
         JavaSparkContext jsc = new JavaSparkContext(conf);
-        jsc.setLogLevel("WARN");
+        jsc.setLogLevel("WARN");*/
 
 
         // Load and parse data
@@ -59,8 +59,7 @@ public class SecondQuerySolver {
         }
 
         //new, use preprocessor to grab city ID for correct UTC
-        CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
-        Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
+        Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
     /*    List<WeatherMeasurementPojo> humidities = csvToMeasurementPojo(humidityReader,cities);
         List<WeatherMeasurementPojo> pressures = csvToMeasurementPojo(pressionReader,cities);
@@ -72,13 +71,21 @@ public class SecondQuerySolver {
 
 
         */
+        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = new WeatherRDDLoader(cities)
+                .loadWeatherMeasurementPojoRDDFromFile(pathHumidity);
 
-        JavaRDD<String> csvData = jsc.textFile(pathHumidity);
+        JavaRDD<WeatherMeasurementPojo> pressuresRDD = new WeatherRDDLoader(cities)
+                .loadWeatherMeasurementPojoRDDFromFile(pathPressure);
+
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoader(cities)
+                .loadWeatherMeasurementPojoRDDFromFile(pathTemperature);
+
+        /*JavaRDD<String> csvData = jsc.textFile(pathHumidity);
         String headerHumidity = csvData.first();
         JavaRDD<String> noheaderRDD = csvData.filter(row -> !row.equals(headerHumidity));
 
         JavaRDD<WeatherMeasurementPojo> humiditiesRDD = noheaderRDD.flatMap(
-                        new MeasurementParserFlatMap(headerHumidity).setCitiesMap(cities)
+                        new WeatherMeasurementParserFlatMap(headerHumidity).setCitiesMap(cities)
                 );
 
         JavaRDD<String> csvPressureData = jsc.textFile(pathPressure);
@@ -86,7 +93,7 @@ public class SecondQuerySolver {
         JavaRDD<String> noheaderPressureRDD = csvPressureData.filter(row -> !row.equals(headerPressure));
 
         JavaRDD<WeatherMeasurementPojo> pressuresRDD = noheaderPressureRDD.flatMap(
-                new MeasurementParserFlatMap(headerPressure).setCitiesMap(cities)
+                new WeatherMeasurementParserFlatMap(headerPressure).setCitiesMap(cities)
         );
 
         JavaRDD<String> csvTemperatureData = jsc.textFile(pathTemperature);
@@ -94,9 +101,9 @@ public class SecondQuerySolver {
         JavaRDD<String> noheaderTemperatureRDD = csvTemperatureData.filter(row -> !row.equals(headerTemperature));
 
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = noheaderTemperatureRDD.flatMap(
-                new MeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
+                new WeatherMeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
         );
-
+*/
 
         final double start = System.nanoTime();
 
@@ -160,7 +167,7 @@ public class SecondQuerySolver {
             });
     }
 
-    private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
+    /*private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
         List<WeatherMeasurementPojo> measurements = new ArrayList<>();
         Iterable<CSVRecord> records;
         Set<String> headers;
@@ -199,6 +206,6 @@ public class SecondQuerySolver {
         }
         return  measurements;
     }
-
+*/
 
 }

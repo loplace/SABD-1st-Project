@@ -10,7 +10,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
-import parser.MeasurementParserFlatMap;
+import parser.WeatherMeasurementParserFlatMap;
+import parser.WeatherRDDLoader;
 import scala.Tuple2;
 import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
@@ -31,35 +32,28 @@ public class ThirdQuerySolver {
     public static void main(String[] args) {
 
 
-        SparkConf conf = new SparkConf()
+       /* SparkConf conf = new SparkConf()
                 .setMaster("local")
                 .setAppName("First query Solver");
 
         JavaSparkContext jsc = new JavaSparkContext(conf);
-        jsc.setLogLevel("WARN");
+        jsc.setLogLevel("WARN");*/
 
         // Load and parse data
         String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
 
-   /*     Reader temperatureReader = null;
-
-        try {
-            temperatureReader = new FileReader(pathTemperature);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } */
-
         //new, use preprocessor to grab city ID for correct UTC
-        CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
-        Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
+        Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
-        JavaRDD<String> csvTemperatureData = jsc.textFile(pathTemperature);
+        /*JavaRDD<String> csvTemperatureData = jsc.textFile(pathTemperature);
         String headerTemperature = csvTemperatureData.first();
         JavaRDD<String> noheaderTemperatureRDD = csvTemperatureData.filter(row -> !row.equals(headerTemperature));
 
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = noheaderTemperatureRDD.flatMap(
-                new MeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
+                new WeatherMeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
         );
+*/
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoader(cities).loadWeatherMeasurementPojoRDDFromFile(pathTemperature);
 
        // List<WeatherMeasurementPojo> temperatures = csvToMeasurementPojo(temperatureReader,cities);
 
@@ -150,7 +144,7 @@ public class ThirdQuerySolver {
     }
 
 
-    private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
+    /*private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
         List<WeatherMeasurementPojo> measurements = new ArrayList<>();
         Iterable<CSVRecord> records;
         Set<String> headers;
@@ -182,7 +176,7 @@ public class ThirdQuerySolver {
             }
         }
         return  measurements;
-    }
+    }*/
 
 
 }
