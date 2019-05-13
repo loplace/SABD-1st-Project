@@ -4,7 +4,7 @@
         <value>2</value>
     </property>
     <property>
-        <name>dfs.permissions.enabled</name>
+        <name>dfs.permissions</name>
         <value>false</value>
     </property>
     <property>

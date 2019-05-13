@@ -13,6 +13,8 @@ services:
             - hadoop_network
         ports:
             - "5555:5555"
+        volumes: 
+            - ./nifi_conf:/usr/local/nifi/conf/flow
         stdin_open: true
         tty: true
 
