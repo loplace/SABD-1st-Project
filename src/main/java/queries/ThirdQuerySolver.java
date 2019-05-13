@@ -45,17 +45,9 @@ public class ThirdQuerySolver {
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
-        /*JavaRDD<String> csvTemperatureData = jsc.textFile(pathTemperature);
-        String headerTemperature = csvTemperatureData.first();
-        JavaRDD<String> noheaderTemperatureRDD = csvTemperatureData.filter(row -> !row.equals(headerTemperature));
-
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = noheaderTemperatureRDD.flatMap(
-                new WeatherMeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
-        );
-*/
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoader(cities).loadWeatherMeasurementPojoRDDFromFile(pathTemperature);
 
-       // List<WeatherMeasurementPojo> temperatures = csvToMeasurementPojo(temperatureReader,cities);
+        //List<WeatherMeasurementPojo> temperatures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathTemperature,cities);
 
         final double start = System.nanoTime();
 
@@ -142,41 +134,6 @@ public class ThirdQuerySolver {
 
         return descRankByMeanDiff.zipWithIndex();
     }
-
-
-    /*private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
-        List<WeatherMeasurementPojo> measurements = new ArrayList<>();
-        Iterable<CSVRecord> records;
-        Set<String> headers;
-        records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
-        headers = records.iterator().next().toMap().keySet();
-        headers.remove("datetime");
-
-        Iterator<CSVRecord> iterator = records.iterator();
-        while (iterator.hasNext()) {
-
-            CSVRecord record = iterator.next();
-            for (String field : headers) {
-
-                String dateTime = record.get("datetime");
-                String measurementValue = record.get(field);
-
-                if (!measurementValue.isEmpty() && !dateTime.isEmpty()) {
-                    double measurement = Double.parseDouble(measurementValue);
-                    WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(field, dateTime, measurement);
-
-                    String key = wmp.getCity();
-                    CityModel cityModel = cities.get(key);
-                    if (cityModel != null){
-                        String country = cityModel.getCountry();
-                        wmp.setCountry(country);
-                    }
-                    measurements.add(wmp);
-                }
-            }
-        }
-        return  measurements;
-    }*/
 
 
 }

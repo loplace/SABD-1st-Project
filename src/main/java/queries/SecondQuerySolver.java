@@ -10,6 +10,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import parser.WeatherRDDLoader;
+import parser.old.WeatherMeasurementCSVParser;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
@@ -43,34 +44,20 @@ public class SecondQuerySolver {
         String pathPressure = AppConfiguration.getProperty("dataset.csv.pressure");
         String pathHumidity = AppConfiguration.getProperty("dataset.csv.humidity");
 
-     //   TemperatureValidator temperatureValidator = new TemperatureValidator();
-     //   temperatureValidator.preprocessTemperature(pathTemperature);
-
-        Reader temperatureReader = null;
-        Reader pressionReader = null;
-        Reader humidityReader = null;
-
-        try {
-            temperatureReader = new FileReader(pathTemperature);
-            pressionReader = new FileReader(pathPressure);
-            humidityReader = new FileReader(pathHumidity);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
 
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
-    /*    List<WeatherMeasurementPojo> humidities = csvToMeasurementPojo(humidityReader,cities);
-        List<WeatherMeasurementPojo> pressures = csvToMeasurementPojo(pressionReader,cities);
-        List<WeatherMeasurementPojo> temperatures = csvToMeasurementPojo(temperatureReader,cities);
+        /*
+        List<WeatherMeasurementPojo> humidities = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathHumidity,cities);
+        List<WeatherMeasurementPojo> pressures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathPressure,cities);
+        List<WeatherMeasurementPojo> temperatures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathTemperature,cities);
 
         JavaRDD<WeatherMeasurementPojo> humiditiesRDD = jsc.parallelize(humidities,850);
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = jsc.parallelize(temperatures,850);
         JavaRDD<WeatherMeasurementPojo> pressuresRDD = jsc.parallelize(pressures,850);
-
-
         */
+
         JavaRDD<WeatherMeasurementPojo> humiditiesRDD = new WeatherRDDLoader(cities)
                 .loadWeatherMeasurementPojoRDDFromFile(pathHumidity);
 
@@ -80,33 +67,8 @@ public class SecondQuerySolver {
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoader(cities)
                 .loadWeatherMeasurementPojoRDDFromFile(pathTemperature);
 
-        /*JavaRDD<String> csvData = jsc.textFile(pathHumidity);
-        String headerHumidity = csvData.first();
-        JavaRDD<String> noheaderRDD = csvData.filter(row -> !row.equals(headerHumidity));
-
-        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = noheaderRDD.flatMap(
-                        new WeatherMeasurementParserFlatMap(headerHumidity).setCitiesMap(cities)
-                );
-
-        JavaRDD<String> csvPressureData = jsc.textFile(pathPressure);
-        String headerPressure = csvPressureData.first();
-        JavaRDD<String> noheaderPressureRDD = csvPressureData.filter(row -> !row.equals(headerPressure));
-
-        JavaRDD<WeatherMeasurementPojo> pressuresRDD = noheaderPressureRDD.flatMap(
-                new WeatherMeasurementParserFlatMap(headerPressure).setCitiesMap(cities)
-        );
-
-        JavaRDD<String> csvTemperatureData = jsc.textFile(pathTemperature);
-        String headerTemperature = csvTemperatureData.first();
-        JavaRDD<String> noheaderTemperatureRDD = csvTemperatureData.filter(row -> !row.equals(headerTemperature));
-
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = noheaderTemperatureRDD.flatMap(
-                new WeatherMeasurementParserFlatMap(headerTemperature).setCitiesMap(cities)
-        );
-*/
 
         final double start = System.nanoTime();
-
 
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> humiditiesOutput = computeAggregateValuesFromRDD(humiditiesRDD);
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> temperaturesOutput = computeAggregateValuesFromRDD(temperaturesRDD);
@@ -166,46 +128,5 @@ public class SecondQuerySolver {
                 return new Tuple2<>(key,value);
             });
     }
-
-    /*private static List<WeatherMeasurementPojo> csvToMeasurementPojo(Reader in, Map<String, CityModel> cities) throws IOException {
-        List<WeatherMeasurementPojo> measurements = new ArrayList<>();
-        Iterable<CSVRecord> records;
-        Set<String> headers;
-        records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
-        headers = records.iterator().next().toMap().keySet();
-        headers.remove("datetime");
-
-//        headers.forEach(System.out::println);
-        Iterator<CSVRecord> iterator = records.iterator();
-        while (iterator.hasNext()) {
-
-            CSVRecord record = iterator.next();
-            for (String field : headers) {
-
-                String dateTime = record.get("datetime");
-                String measurementValue = record.get(field);
-
-
-                if (!measurementValue.isEmpty() && !dateTime.isEmpty()) {
-
-                    double measurement = Double.parseDouble(measurementValue);
-                    WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(field, dateTime, measurement);
-
-                    String key = wmp.getCity();
-                    CityModel cityModel = cities.get(key);
-                    if (cityModel != null){
-                        String country = cityModel.getCountry();
-                        wmp.setCountry(country);
-                    }
-
-                    measurements.add(wmp);
-
-                }
-            }
-
-        }
-        return  measurements;
-    }
-*/
 
 }

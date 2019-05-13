@@ -15,8 +15,6 @@ public class HDFSHelper {
 
     public static void readFromHDFS (String filepath){
 
-
-
     }
 
     public static void writeToHDFS(String filepath) throws IOException {
