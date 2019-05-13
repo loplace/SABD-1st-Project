@@ -3,12 +3,11 @@ package parser;
 import model.CityModel;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.hadoop.fs.Path;
 import utils.configuration.AppConfiguration;
+import utils.hdfs.HDFSHelper;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.*;
 
 public class CityAttributeParser {
@@ -27,9 +26,14 @@ public class CityAttributeParser {
 
         Iterable<CSVRecord> records;
         Reader in = null;
-
+        InputStream wrappedStream=null;
         try {
             in = new FileReader(csvpath);
+            if (csvpath.startsWith("hdfs://")) {
+                Path hdfsreadpath = new Path(csvpath);
+                wrappedStream = HDFSHelper.getInstance().getFs().open(hdfsreadpath).getWrappedStream();
+                in = new InputStreamReader(wrappedStream);
+            }
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }

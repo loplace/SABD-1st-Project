@@ -7,6 +7,7 @@ import model.CityModel;
 import model.WeatherDescriptionPojo;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -18,6 +19,7 @@ import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import utils.configuration.AppConfiguration;
+import utils.hdfs.HDFSHelper;
 import utils.locationinfo.CityAttributesPreprocessor;
 
 public class FirstQuerySolver {
@@ -51,7 +53,7 @@ public class FirstQuerySolver {
         //String path = args[0];
         //String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
         //String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
-        String path = AppConfiguration.getProperty("dataset.csv.weatherdesc");
+        String stringPath = AppConfiguration.getProperty("dataset.csv.weatherdesc");
 
         Iterable<CSVRecord> records;
         Reader in = null;
@@ -59,8 +61,16 @@ public class FirstQuerySolver {
         Integer[] months = {3,4,5};
         List<Integer> selectedMonths = Arrays.asList(months);
 
+        InputStream wrappedStream=null;
         try {
-            in = new FileReader(path);
+            //in = new FileReader(stringPath);
+            if (stringPath.startsWith("hdfs://")) {
+                Path hdfsreadpath = new Path(stringPath);
+                wrappedStream = HDFSHelper.getInstance().getFs().open(hdfsreadpath).getWrappedStream();
+                in = new InputStreamReader(wrappedStream);
+            }
+
+
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }

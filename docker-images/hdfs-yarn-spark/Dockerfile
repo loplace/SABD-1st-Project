@@ -37,11 +37,13 @@ ADD spark-config/spark-defaults.conf $SPARK_HOME/conf
 ADD spark-config/slaves $SPARK_HOME/conf
 
 # BOOTSTRAP SERVICE SCRIPT
-RUN mkdir /sabd
+RUN mkdir /sabd; mkdir /sabd/spark-submit-scripts
 ADD start-services.sh /sabd
 RUN chmod 700 /sabd/start-services.sh
 ADD stop-services.sh /sabd
 RUN chmod 700 /sabd/stop-services.sh
+
+COPY spark-submit-scripts /sabd/spark-submit-scripts
 
 ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
 

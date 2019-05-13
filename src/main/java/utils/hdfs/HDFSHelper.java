@@ -1,6 +1,6 @@
 package utils.hdfs;
 
-import org.apache.commons.io.IOUtils;
+import lombok.Getter;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
@@ -19,6 +19,8 @@ public class HDFSHelper {
     private Configuration conf;
 
     private static HDFSHelper instance = null;
+
+    @Getter
     private FileSystem fs;
 
     private HDFSHelper(){
