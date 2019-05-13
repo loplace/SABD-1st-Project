@@ -2,26 +2,17 @@ package queries;
 
 import model.CityModel;
 import model.WeatherMeasurementPojo;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
-import parser.WeatherRDDLoader;
-import parser.old.WeatherMeasurementCSVParser;
+import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
-import java.util.List;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.*;
 
 public class SecondQuerySolver {
@@ -58,14 +49,14 @@ public class SecondQuerySolver {
         JavaRDD<WeatherMeasurementPojo> pressuresRDD = jsc.parallelize(pressures,850);
         */
 
-        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = new WeatherRDDLoader(cities)
-                .loadWeatherMeasurementPojoRDDFromFile(pathHumidity);
+        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = new WeatherRDDLoaderFromTextFile(cities)
+                .loadWeatherMeasurementPojoRDD(pathHumidity);
 
-        JavaRDD<WeatherMeasurementPojo> pressuresRDD = new WeatherRDDLoader(cities)
-                .loadWeatherMeasurementPojoRDDFromFile(pathPressure);
+        JavaRDD<WeatherMeasurementPojo> pressuresRDD = new WeatherRDDLoaderFromTextFile(cities)
+                .loadWeatherMeasurementPojoRDD(pathPressure);
 
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoader(cities)
-                .loadWeatherMeasurementPojoRDDFromFile(pathTemperature);
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoaderFromTextFile(cities)
+                .loadWeatherMeasurementPojoRDD(pathTemperature);
 
 
         final double start = System.nanoTime();

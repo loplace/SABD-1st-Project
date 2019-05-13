@@ -8,18 +8,18 @@ import utils.spark.SparkContextSingleton;
 
 import java.util.Map;
 
-public class WeatherRDDLoader {
+public class WeatherRDDLoaderFromTextFile {
 
 
     private JavaSparkContext jsc;
     private Map<String, CityModel> cities;
 
-    public WeatherRDDLoader(Map<String, CityModel> citiesMap) {
+    public WeatherRDDLoaderFromTextFile(Map<String, CityModel> citiesMap) {
         jsc = SparkContextSingleton.getInstance("local").getContext();
         cities = citiesMap;
     }
 
-    public JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojoRDDFromFile(String filePath) {
+    public JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojoRDD(String filePath) {
 
         JavaRDD<String> csvData = jsc.textFile(filePath);
         String csvHeader = csvData.first();

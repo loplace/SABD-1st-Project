@@ -2,21 +2,15 @@ package queries;
 
 import model.CityModel;
 import model.WeatherMeasurementPojo;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
-import parser.WeatherMeasurementParserFlatMap;
-import parser.WeatherRDDLoader;
+import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
 
-import java.io.*;
 import java.util.*;
 
 public class ThirdQuerySolver {
@@ -34,7 +28,7 @@ public class ThirdQuerySolver {
 
        /* SparkConf conf = new SparkConf()
                 .setMaster("local")
-                .setAppName("First query Solver");
+                .setAppName("Third query Solver");
 
         JavaSparkContext jsc = new JavaSparkContext(conf);
         jsc.setLogLevel("WARN");*/
@@ -45,7 +39,7 @@ public class ThirdQuerySolver {
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoader(cities).loadWeatherMeasurementPojoRDDFromFile(pathTemperature);
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoaderFromTextFile(cities).loadWeatherMeasurementPojoRDD(pathTemperature);
 
         //List<WeatherMeasurementPojo> temperatures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathTemperature,cities);
 

@@ -3,4 +3,12 @@
         <name>dfs.replication</name>
         <value>2</value>
     </property>
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dfs.web.ugi</name>
+        <value>root,root</value>
+    </property>
 </configuration>

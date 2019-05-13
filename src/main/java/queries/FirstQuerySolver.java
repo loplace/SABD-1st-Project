@@ -106,7 +106,7 @@ public class FirstQuerySolver {
 
         final double start = System.nanoTime();
 
-
+        //TODO PARALLELIZE BRUTTA E CATTIVA, TEXTFILE BUONA!
         JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos,850);
 
         descriptionRDD.foreach(wdp -> {
