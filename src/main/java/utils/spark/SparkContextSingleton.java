@@ -2,13 +2,12 @@ package utils.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.SparkSession;
 import utils.configuration.AppConfiguration;
 
 public class SparkContextSingleton {
 
     private static SparkContextSingleton instance;
-    private JavaSparkContext sc;
+    private JavaSparkContext jsc;
 
     public static SparkContextSingleton getInstance() {
         String sec = AppConfiguration.getSparkExecuteContext();
@@ -26,11 +25,11 @@ public class SparkContextSingleton {
         if (local.equals("local")) {
             conf.setMaster("local[*]");
         }
-        sc = new JavaSparkContext(conf);
-        sc.setLogLevel("WARN");
+        jsc = new JavaSparkContext(conf);
+        jsc.setLogLevel("WARN");
     }
 
     public JavaSparkContext getContext() {
-        return sc;
+        return jsc;
     }
 }

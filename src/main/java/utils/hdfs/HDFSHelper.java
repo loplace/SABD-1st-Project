@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class HDFSHelper {
 
-    private static final String hdfsURL = AppConfiguration.getProperty("hdfs.uri");
+    public static final String hdfsURL = AppConfiguration.getProperty("hdfs.uri");
 
     private static final Logger logger = Logger.getLogger("");
 
@@ -147,7 +147,24 @@ public class HDFSHelper {
 
         logger.info("Ending Write on HDFS");
 
+    }
 
+    public void writeStringToHDFS(String folderpath, String filename, String data) {
+
+        logger.info("Beginning Write on HDFS");
+
+        initSubFolder(folderpath);
+        Path hdfsWritePath = new Path(folderpath + "/" + filename);
+        FSDataOutputStream fsDataOutputStream;
+        try {
+            fsDataOutputStream = fs.create(hdfsWritePath);
+            fsDataOutputStream.writeChars(data);
+            fsDataOutputStream.close();
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
+            logger.warning("IOException: " + e.getMessage());
+        }
+        logger.info("Ending Write on HDFS");
     }
 
 

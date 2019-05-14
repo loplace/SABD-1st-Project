@@ -12,6 +12,7 @@ import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import utils.configuration.AppConfiguration;
+import utils.hdfs.HDFSHelper;
 import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
 
@@ -120,17 +121,21 @@ public class FirstQuerySolver {
 
         System.out.printf("Query 1 completed in %f seconds\n",delta);
 
-
-
         List<Tuple2<Integer, Iterable<String>>> list = resultRDD.collect();
 
+        StringBuilder sb = new StringBuilder();
         int count = 0;
         for (Tuple2 o: list
              ) {
             count++;
             System.out.println(o._1());
+            sb.append(o._1().toString()+"\n");
             System.out.println(o._2());
+            sb.append(o._2().toString()+"\n");
         }
+
+        HDFSHelper.getInstance().writeStringToHDFS("/output","query1.txt",sb.toString());
+
 
 
     }
