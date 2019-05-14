@@ -19,12 +19,12 @@ public class WeatherDescriptionParserFlatMap implements FlatMapFunction<String, 
 
     public WeatherDescriptionParserFlatMap setCitiesMap(Map<String, CityModel> cities) {
         citiesMap = cities;
+        WeatherMeasurementParser.setCitiesMap(citiesMap);
         return this;
     }
 
     @Override
     public Iterator<WeatherDescriptionPojo> call(String line) {
-        WeatherMeasurementParser.setCitiesMap(citiesMap);
 
         return WeatherDescriptionParser.parseLine(header,line);
     }

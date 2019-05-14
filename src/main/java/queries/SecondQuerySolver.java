@@ -4,13 +4,18 @@ import model.CityModel;
 import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
+import parser.WeatherRDDLoaderFromParquetFile;
 import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import utils.configuration.AppConfiguration;
+import utils.hdfs.HDFSDataLoader;
+import utils.hdfs.HDFSHelper;
 import utils.locationinfo.CityAttributesPreprocessor;
+import utils.spark.SparkContextSingleton;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,25 +24,43 @@ public class SecondQuerySolver {
 
     public static void main(String[] args) {
 
-        //String path = args[0];
+        String sparkExecContext = args[0];
+        String fileFormat = args[1];
 
-        String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
-        String pathPressure = AppConfiguration.getProperty("dataset.csv.pressure");
-        String pathHumidity = AppConfiguration.getProperty("dataset.csv.humidity");
+        AppConfiguration.setSparkExecutionContext(sparkExecContext);
+        JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
+
+        System.err.println("sparkExecContext: "+sparkExecContext);
+        System.err.println("fileFormat: "+fileFormat);
+
+        String pathTemperature = null;
+        String pathPressure = null;
+        String pathHumidity = null;
+
+        if (fileFormat.equals("csv")) {
+            pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
+            pathPressure = AppConfiguration.getProperty("dataset.csv.pressure");
+            pathHumidity = AppConfiguration.getProperty("dataset.csv.humidity");
+        }
+        if (fileFormat.equals("parquet")) {
+            pathTemperature = AppConfiguration.getProperty("dataset.parquet.temperature");
+            pathPressure = AppConfiguration.getProperty("dataset.parquet.pressure");
+            pathHumidity = AppConfiguration.getProperty("dataset.parquet.humidity");
+        }
 
         final double start = System.nanoTime();
 
+        System.err.println("pathTemperature: "+pathTemperature);
+        System.err.println("pathPressure: "+pathPressure);
+        System.err.println("pathHumidity: "+pathHumidity);
+
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
+        HDFSDataLoader.setCityMap(cities);
 
-        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = new WeatherRDDLoaderFromTextFile(cities)
-                .loadWeatherMeasurementPojoRDD(pathHumidity);
-
-        JavaRDD<WeatherMeasurementPojo> pressuresRDD = new WeatherRDDLoaderFromTextFile(cities)
-                .loadWeatherMeasurementPojoRDD(pathPressure);
-
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoaderFromTextFile(cities)
-                .loadWeatherMeasurementPojoRDD(pathTemperature);
+        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = HDFSDataLoader.loadWeatherMeasurementPojo(fileFormat,pathHumidity);
+        JavaRDD<WeatherMeasurementPojo> pressuresRDD = HDFSDataLoader.loadWeatherMeasurementPojo(fileFormat,pathPressure);
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = HDFSDataLoader.loadWeatherMeasurementPojo(fileFormat,pathTemperature);
 
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> humiditiesOutput = computeAggregateValuesFromRDD(humiditiesRDD);
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> temperaturesOutput = computeAggregateValuesFromRDD(temperaturesRDD);

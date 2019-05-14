@@ -4,12 +4,14 @@ import model.CityModel;
 import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
 import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import utils.configuration.AppConfiguration;
 import utils.locationinfo.CityAttributesPreprocessor;
+import utils.spark.SparkContextSingleton;
 
 import java.util.*;
 
@@ -24,6 +26,12 @@ public class ThirdQuerySolver {
     public final static LocalTime endHour = new LocalTime("15:00:00");
 
     public static void main(String[] args) {
+
+        String sparkExecContext = args[0];
+        String fileFormat = args[1];
+
+        AppConfiguration.setSparkExecutionContext(sparkExecContext);
+        JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
 
         // Load and parse data
         String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");

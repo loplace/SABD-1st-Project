@@ -7,6 +7,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.joda.time.LocalTime;
+import parser.WeatherRDDLoaderFromParquetFile;
 import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import scala.Tuple3;
@@ -28,6 +29,8 @@ public class FirstQuerySolver {
     public static void main(String args[]) {
 
         String sparkExecContext = args[0];
+        String fileFormat = args[1];
+
         AppConfiguration.setSparkExecutionContext(sparkExecContext);
         JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
 
