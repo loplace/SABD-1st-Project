@@ -26,8 +26,9 @@ public class FirstQuerySolver {
 
     public static void main(String args[]) {
 
-        //String sparkExecContext = args[0];
-        JavaSparkContext jsc = SparkContextSingleton.getInstance("local").getContext();
+        String sparkExecContext = args[0];
+        AppConfiguration.setSparkExecutionContext(sparkExecContext);
+        JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
 
         LocalTime startHour = new LocalTime("08:00:00");
         LocalTime endHour = new LocalTime("18:00:00");

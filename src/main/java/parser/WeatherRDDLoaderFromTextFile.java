@@ -16,7 +16,7 @@ public class WeatherRDDLoaderFromTextFile {
     private Map<String, CityModel> cities;
 
     public WeatherRDDLoaderFromTextFile(Map<String, CityModel> citiesMap) {
-        jsc = SparkContextSingleton.getInstance("local").getContext();
+        jsc = SparkContextSingleton.getInstance().getContext();
         cities = citiesMap;
     }
 

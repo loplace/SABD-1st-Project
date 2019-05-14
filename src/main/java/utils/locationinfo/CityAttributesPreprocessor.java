@@ -1,10 +1,12 @@
 package utils.locationinfo;
 
+import lombok.NoArgsConstructor;
 import parser.CityAttributeParser;
 import utils.locationinfo.LocationInfoAssigner;
 
 import java.io.IOException;
 
+@NoArgsConstructor
 public class CityAttributesPreprocessor {
 
     private CityAttributeParser cap = null;

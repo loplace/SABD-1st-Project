@@ -10,6 +10,7 @@ public class AppConfiguration {
 
     private Properties prop;
     private static AppConfiguration instance;
+    private String sparkExecuteContext;
 
     private AppConfiguration(String fileConf) {
         try {
@@ -33,6 +34,16 @@ public class AppConfiguration {
 
     public static String getProperty(String confKey) {
         return getInstance().prop.getProperty(confKey);
+    }
+
+    public static AppConfiguration setSparkExecutionContext(String sec) {
+        AppConfiguration appConfiguration = AppConfiguration.getInstance();
+        appConfiguration.sparkExecuteContext = sec;
+        return appConfiguration;
+    }
+
+    public static String getSparkExecuteContext() {
+        return AppConfiguration.getInstance().sparkExecuteContext;
     }
 
 }

@@ -2,3 +2,4 @@
 .idea
 target
 out
+docker-compose/spark_jar/SABD-project1-1.0-SNAPSHOT.jar

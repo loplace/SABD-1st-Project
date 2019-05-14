@@ -1,29 +1,24 @@
 package parser;
 
 import model.CityModel;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.hadoop.fs.Path;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import utils.configuration.AppConfiguration;
-import utils.hdfs.HDFSHelper;
 import utils.spark.SparkContextSingleton;
 
-import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class CityAttributeParser {
 
     public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes");
 
-
     private Map<String, CityModel> cities = null;
     private JavaSparkContext jsc;
 
     public CityAttributeParser() {
-        jsc = SparkContextSingleton.getInstance("local").getContext();
+        jsc = SparkContextSingleton.getInstance().getContext();
         this.cities = new HashMap<>();
     }
 

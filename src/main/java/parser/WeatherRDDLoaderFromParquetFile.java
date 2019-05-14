@@ -20,7 +20,7 @@ public class WeatherRDDLoaderFromParquetFile {
     private SQLContext sqlContext;
 
     public WeatherRDDLoaderFromParquetFile(Map<String, CityModel> citiesMap) {
-        jsc = SparkContextSingleton.getInstance("local").getContext();
+        jsc = SparkContextSingleton.getInstance().getContext();
         sqlContext = new SQLContext(jsc);
         cities = citiesMap;
     }
