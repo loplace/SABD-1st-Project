@@ -2,4 +2,3 @@
 .idea
 target
 out
-docker-compose/spark_jar
