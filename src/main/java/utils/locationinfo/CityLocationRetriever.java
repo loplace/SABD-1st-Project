@@ -1,5 +1,7 @@
 package utils.locationinfo;
 
+import utils.configuration.AppConfiguration;
+
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -7,8 +9,8 @@ import java.util.Scanner;
 
 public class CityLocationRetriever {
 
-    public static final String HOST = "localhost";
-    public static final int PORT = 8888;
+    public static final String HOST = AppConfiguration.getProperty("citylocationhelper.address.ip");
+    public static final int PORT = Integer.parseInt(AppConfiguration.getProperty("citylocationhelper.address.port"));
 
 
     public static String retrieveLocationInfo(double latitude, double longitude) {

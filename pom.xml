@@ -18,26 +18,43 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
-        </plugins>
-    </build>
-    <!--<build>
-        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.1</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <outputDirectory>target/jar</outputDirectory>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-resource-one</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+
+                        <configuration>
+                            <outputDirectory>${basedir}/docker-compose/spark_jar</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/jar</directory>
+                                    <includes>
+                                        <include>**/*.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>-->
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
@@ -86,8 +103,5 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
         </dependency>
-
     </dependencies>
-
-
 </project>

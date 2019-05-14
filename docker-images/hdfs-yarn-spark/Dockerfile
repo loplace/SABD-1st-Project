@@ -37,22 +37,25 @@ ADD spark-config/spark-defaults.conf $SPARK_HOME/conf
 ADD spark-config/slaves $SPARK_HOME/conf
 
 # BOOTSTRAP SERVICE SCRIPT
-RUN mkdir /sabd; mkdir /sabd/spark-submit-scripts
+RUN mkdir /sabd
+RUN mkdir /sabd/jar
+
 ADD start-services.sh /sabd
 RUN chmod 700 /sabd/start-services.sh
 ADD stop-services.sh /sabd
 RUN chmod 700 /sabd/stop-services.sh
 
-COPY spark-submit-scripts /sabd/spark-submit-scripts
+VOLUME /sabd/jar
 
 ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
+WORKDIR /sabd
 
 ENV BOOTSTRAP /usr/local/bootstrap.sh
 CMD /usr/local/bootstrap.sh
 
 # # HDFS ports
 EXPOSE 9866 9867 9870 9864 9868 9820 9000
-EXPOSE 54310
+#EXPOSE 54310
 # # Mapred ports
 # EXPOSE 10020 19888
 

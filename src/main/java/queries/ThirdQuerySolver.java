@@ -25,27 +25,15 @@ public class ThirdQuerySolver {
 
     public static void main(String[] args) {
 
-
-       /* SparkConf conf = new SparkConf()
-                .setMaster("local")
-                .setAppName("Third query Solver");
-
-        JavaSparkContext jsc = new JavaSparkContext(conf);
-        jsc.setLogLevel("WARN");*/
-
         // Load and parse data
         String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
+
+        final double start = System.nanoTime();
 
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoaderFromTextFile(cities).loadWeatherMeasurementPojoRDD(pathTemperature);
-
-        //List<WeatherMeasurementPojo> temperatures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathTemperature,cities);
-
-        final double start = System.nanoTime();
-
-       // JavaRDD<WeatherMeasurementPojo> temperaturesRDD = jsc.parallelize(temperatures,850);
 
         JavaRDD<WeatherMeasurementPojo> tempPer2016RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2016);
         JavaRDD<WeatherMeasurementPojo> tempPer2017RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2017);

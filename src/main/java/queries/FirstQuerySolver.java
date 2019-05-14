@@ -1,128 +1,58 @@
 package queries;
 
-import java.io.*;
-import java.util.*;
-
 import model.CityModel;
 import model.WeatherDescriptionPojo;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.hadoop.fs.Path;
-import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.joda.time.LocalTime;
+import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import utils.configuration.AppConfiguration;
-import utils.hdfs.HDFSHelper;
 import utils.locationinfo.CityAttributesPreprocessor;
+import utils.spark.SparkContextSingleton;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class FirstQuerySolver {
 
     public final static int STATICONE = 1;
 
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) {
 
-
-
-        SparkConf conf = new SparkConf()
-                .setMaster("local")
-                .setAppName("First query Solver");
-
-        JavaSparkContext jsc = new JavaSparkContext(conf);
-        jsc.setLogLevel("WARN");
-
-/*        LocalTime earlier = new LocalTime("23:00:00");
-        LocalTime later = new LocalTime("23:12:34");
-
-        System.out.println(earlier.compareTo(later));   // -1
-        System.out.println(later.compareTo(earlier));   // 1
-        System.out.println(earlier.compareTo(earlier)); // 0*/
+        //String sparkExecContext = args[0];
+        JavaSparkContext jsc = SparkContextSingleton.getInstance("local").getContext();
 
         LocalTime startHour = new LocalTime("08:00:00");
         LocalTime endHour = new LocalTime("18:00:00");
 
 
         // Load and parse data
-        //String path = args[0];
-        //String path = "/home/federico/Scaricati/prj1_dataset/weather_description.csv";
-        //String path = "/Users/antonio/Downloads/prj1_dataset/weather_description.csv";
-        String stringPath = AppConfiguration.getProperty("dataset.csv.weatherdesc");
+        String weatherDescriptionCSVPath = AppConfiguration.getProperty("dataset.csv.weatherdesc");
+        System.out.println("Parsing weatherDescriptionCSVPath: "+weatherDescriptionCSVPath);
 
-        Iterable<CSVRecord> records;
-        Reader in = null;
-        Set<String> headers = null;
         Integer[] months = {3,4,5};
         List<Integer> selectedMonths = Arrays.asList(months);
-
-        InputStream wrappedStream=null;
-        try {
-            //in = new FileReader(stringPath);
-            if (stringPath.startsWith("hdfs://")) {
-                Path hdfsreadpath = new Path(stringPath);
-                wrappedStream = HDFSHelper.getInstance().getFs().open(hdfsreadpath).getWrappedStream();
-                in = new InputStreamReader(wrappedStream);
-            }
-
-
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
-
-
 
         //new, use preprocessor to grab city ID for correct UTC
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
         Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
 
-        records = CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord(false).parse(in);
-        headers = records.iterator().next().toMap().keySet();
-        headers.remove("datetime");
-//        headers.forEach(System.out::println);
-        List<WeatherDescriptionPojo> weatherDescriptionPojos = new ArrayList<>();
-        Iterator<CSVRecord> iterator = records.iterator();
-        while (iterator.hasNext()) {
-
-            CSVRecord record = iterator.next();
-            for (String field : headers) {
-
-                String dateTime = record.get("datetime");
-                String description = record.get(field);
-
-
-                if (!description.isEmpty() && !dateTime.isEmpty()) {
-
-                    WeatherDescriptionPojo weatherDescriptionPojo = new WeatherDescriptionPojo(field, dateTime, description);
-
-                    String key = weatherDescriptionPojo.getCity();
-                    CityModel cityModel = cities.get(key);
-                    if (cityModel != null){
-                        String citytimezone = cityModel.getTimezone();
-                        weatherDescriptionPojo.setDateTimezone(citytimezone);
-                    }
-
-                    weatherDescriptionPojos.add(weatherDescriptionPojo);
-
-                }
-            }
-
-        }
 
         final double start = System.nanoTime();
 
-        //TODO PARALLELIZE BRUTTA E CATTIVA, TEXTFILE BUONA!
-        JavaRDD<WeatherDescriptionPojo> descriptionRDD = jsc.parallelize(weatherDescriptionPojos,850);
+        JavaRDD<WeatherDescriptionPojo> descriptionRDD = new WeatherRDDLoaderFromTextFile(cities)
+                .loadWeatherDescriptionPojoRDD(weatherDescriptionCSVPath);
 
         descriptionRDD.foreach(wdp -> {
             wdp.setDateTimezone(cities.get(wdp.getCity()).getTimezone());
         });
-     //   System.out.println("descriptionRDD.count(): " + descriptionRDD.count());
 
 
         //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
@@ -132,16 +62,11 @@ public class FirstQuerySolver {
         //Cancello tutti i POJO che NON contengono Sky is clear come descrizione
         JavaRDD<WeatherDescriptionPojo> clearSkyMonthRDD = selectedMonthRDD.filter(wdp -> wdp.getWeatherCondition().equals("sky is clear"));
 
-     //   System.out.println("clearSkyMonthRDD.count(): " + clearSkyMonthRDD.count());
 
         //Cancello tutti i POJO che sono fuori da un range orario prestabilito
         JavaRDD<WeatherDescriptionPojo> inHoursRangeRDD = clearSkyMonthRDD.filter(wdp -> wdp.getLocalDateTime().hourOfDay().compareTo(startHour) >=0 &&
                 wdp.getLocalDateTime().hourOfDay().compareTo(endHour)<=0 );
 
-    //    System.out.println("inHoursRangeRDD.count(): " + inHoursRangeRDD.count());
-
-        /*List<WeatherDescriptionPojo> firstTen = clearSkyMonthRDD.take(10);
-        firstTen.forEach(System.out::println);*/
 
         //Chiave è la Tupla4(Anno, Città,Mese, giorno del mese), value è 1
         JavaPairRDD<Tuple4<Integer,String,Integer,Integer>,Integer> keyedYearCityMonthDayRDD = inHoursRangeRDD.mapToPair(

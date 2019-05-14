@@ -12,13 +12,8 @@ public class CityAttributesPreprocessor {
     public CityAttributeParser process(){
 
         this.cap = new CityAttributeParser();
-        try {
-            cap.parse();
-            LocationInfoAssigner.locationInfoAssign(cap.getCities());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        cap.parse();
+        LocationInfoAssigner.locationInfoAssign(cap.getCities());
 
         return this.cap;
     }

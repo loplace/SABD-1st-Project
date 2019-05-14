@@ -17,37 +17,18 @@ import java.util.*;
 
 public class SecondQuerySolver {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-
-        /*SparkConf conf = new SparkConf()
-                .setMaster("local")
-                .setAppName("Second query Solver");
-
-        JavaSparkContext jsc = new JavaSparkContext(conf);
-        jsc.setLogLevel("WARN");*/
-
-
-        // Load and parse data
         //String path = args[0];
 
         String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
         String pathPressure = AppConfiguration.getProperty("dataset.csv.pressure");
         String pathHumidity = AppConfiguration.getProperty("dataset.csv.humidity");
 
+        final double start = System.nanoTime();
 
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
-
-        /*
-        List<WeatherMeasurementPojo> humidities = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathHumidity,cities);
-        List<WeatherMeasurementPojo> pressures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathPressure,cities);
-        List<WeatherMeasurementPojo> temperatures = WeatherMeasurementCSVParser.csvToMeasurementPojo(pathTemperature,cities);
-
-        JavaRDD<WeatherMeasurementPojo> humiditiesRDD = jsc.parallelize(humidities,850);
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = jsc.parallelize(temperatures,850);
-        JavaRDD<WeatherMeasurementPojo> pressuresRDD = jsc.parallelize(pressures,850);
-        */
 
         JavaRDD<WeatherMeasurementPojo> humiditiesRDD = new WeatherRDDLoaderFromTextFile(cities)
                 .loadWeatherMeasurementPojoRDD(pathHumidity);
@@ -57,9 +38,6 @@ public class SecondQuerySolver {
 
         JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoaderFromTextFile(cities)
                 .loadWeatherMeasurementPojoRDD(pathTemperature);
-
-
-        final double start = System.nanoTime();
 
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> humiditiesOutput = computeAggregateValuesFromRDD(humiditiesRDD);
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> temperaturesOutput = computeAggregateValuesFromRDD(temperaturesRDD);

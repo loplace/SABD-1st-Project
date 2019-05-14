@@ -33,6 +33,7 @@ public class WeatherDescriptionParser {
 
                     if (!description.isEmpty() && !dateTime.isEmpty()) {
                         WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(cityName, dateTime, description);
+
                         result.add(wdp);
                     }
                 }

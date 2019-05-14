@@ -12,8 +12,9 @@ RUN wget http://it.apache.contactlab.it/nifi/1.9.2/nifi-1.9.2-bin.tar.gz ; tar -
 RUN cd /usr/local && ln -s ./nifi-1.9.2 nifi
 ENV NIFI_HOME /usr/local/nifi
 RUN cd $NIFI_HOME/conf; mv nifi.properties nifi.properties-old;
+
 ADD config/nifi.properties $NIFI_HOME/conf
-ADD config/flow.xml.gz $NIFI_HOME/conf
+#ADD config/flow.xml.gz $NIFI_HOME/conf
 
 VOLUME $NIFI_HOME/conf/flow
 
