@@ -7,19 +7,19 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.joda.time.LocalTime;
-import parser.WeatherRDDLoaderFromParquetFile;
-import parser.WeatherRDDLoaderFromTextFile;
 import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import utils.configuration.AppConfiguration;
-import utils.hdfs.HDFSHelper;
+import utils.hdfs.HDFSDataLoader;
 import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static utils.hdfs.HDFSDataLoader.DATASETNAME.WEATHER_DESC;
 
 public class FirstQuerySolver {
 
@@ -39,8 +39,9 @@ public class FirstQuerySolver {
 
 
         // Load and parse data
-        String weatherDescriptionCSVPath = AppConfiguration.getProperty("dataset.csv.weatherdesc");
-        System.out.println("Parsing weatherDescriptionCSVPath: "+weatherDescriptionCSVPath);
+        HDFSDataLoader.setFileFormat(fileFormat);
+        String pathDescription = HDFSDataLoader.getDataSetFilePath(WEATHER_DESC);
+        System.out.println("pathDescription: "+pathDescription);
 
         Integer[] months = {3,4,5};
         List<Integer> selectedMonths = Arrays.asList(months);
@@ -48,16 +49,15 @@ public class FirstQuerySolver {
         //new, use preprocessor to grab city ID for correct UTC
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
         Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
-
+        HDFSDataLoader.setCityMap(cities);
 
         final double start = System.nanoTime();
 
-        JavaRDD<WeatherDescriptionPojo> descriptionRDD = new WeatherRDDLoaderFromTextFile(cities)
-                .loadWeatherDescriptionPojoRDD(weatherDescriptionCSVPath);
+        JavaRDD<WeatherDescriptionPojo> descriptionRDD = HDFSDataLoader.loadWeatherDescriptiontPojo(pathDescription);
 
-        descriptionRDD.foreach(wdp -> {
+       /* descriptionRDD.foreach(wdp -> {
             wdp.setDateTimezone(cities.get(wdp.getCity()).getTimezone());
-        });
+        });*/
 
 
         //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
@@ -137,7 +137,7 @@ public class FirstQuerySolver {
             sb.append(o._2().toString()+"\n");
         }
 
-        HDFSHelper.getInstance().writeStringToHDFS("/output","query1.txt",sb.toString());
+        //HDFSHelper.getInstance().writeStringToHDFS("/output","query1.txt",sb.toString());
 
 
 

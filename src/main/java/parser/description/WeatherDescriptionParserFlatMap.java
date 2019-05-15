@@ -1,9 +1,9 @@
-package parser;
+package parser.description;
 
 import model.CityModel;
 import model.WeatherDescriptionPojo;
-import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.function.FlatMapFunction;
+import parser.measurement.WeatherMeasurementParser;
 
 import java.util.Iterator;
 import java.util.Map;

@@ -7,13 +7,17 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.util.StatCounter;
 import org.joda.time.LocalTime;
-import parser.WeatherRDDLoaderFromTextFile;
+import parser.validators.TemperatureValidator;
 import scala.Tuple2;
 import utils.configuration.AppConfiguration;
+import utils.hdfs.HDFSDataLoader;
 import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
 
 import java.util.*;
+import java.util.logging.Logger;
+
+import static utils.hdfs.HDFSDataLoader.DATASETNAME.TEMPERATURE;
 
 public class ThirdQuerySolver {
 
@@ -33,15 +37,21 @@ public class ThirdQuerySolver {
         AppConfiguration.setSparkExecutionContext(sparkExecContext);
         JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
 
-        // Load and parse data
-        String pathTemperature = AppConfiguration.getProperty("dataset.csv.temperature");
+        System.out.println("sparkExecContext: "+sparkExecContext);
+        System.out.println("fileFormat: "+fileFormat);
+
+        HDFSDataLoader.setFileFormat(fileFormat);
+        String pathTemperature = HDFSDataLoader.getDataSetFilePath(TEMPERATURE);
+        System.out.println("pathTemperature: "+pathTemperature);
 
         final double start = System.nanoTime();
 
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
+        HDFSDataLoader.setCityMap(cities);
 
-        JavaRDD<WeatherMeasurementPojo> temperaturesRDD = new WeatherRDDLoaderFromTextFile(cities).loadWeatherMeasurementPojoRDD(pathTemperature);
+        JavaRDD<WeatherMeasurementPojo> temperaturesRDD =
+                HDFSDataLoader.loadWeatherMeasurementPojo(pathTemperature,new TemperatureValidator()).cache();
 
         JavaRDD<WeatherMeasurementPojo> tempPer2016RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2016);
         JavaRDD<WeatherMeasurementPojo> tempPer2017RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2017);

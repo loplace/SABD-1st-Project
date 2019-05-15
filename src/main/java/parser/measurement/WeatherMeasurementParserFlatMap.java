@@ -1,8 +1,9 @@
-package parser;
+package parser.measurement;
 
 import model.CityModel;
 import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.function.FlatMapFunction;
+import parser.validators.IMeasurementValidator;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -11,6 +12,7 @@ public class WeatherMeasurementParserFlatMap implements FlatMapFunction<String, 
 
     private String header;
     private Map<String, CityModel> citiesMap;
+    private IMeasurementValidator validator;
 
     public WeatherMeasurementParserFlatMap(String csvHeader) {
         header = csvHeader;
@@ -22,8 +24,14 @@ public class WeatherMeasurementParserFlatMap implements FlatMapFunction<String, 
         return this;
     }
 
+    public WeatherMeasurementParserFlatMap setValidator(IMeasurementValidator v) {
+        //WeatherMeasurementParser.setValidator(validator);
+        validator = v;
+        return this;
+    }
+
     @Override
     public Iterator<WeatherMeasurementPojo> call(String line) {
-        return WeatherMeasurementParser.parseLine(header,line);
+        return WeatherMeasurementParser.parseLine(header,line,validator);
     }
 }

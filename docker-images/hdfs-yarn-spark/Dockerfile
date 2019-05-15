@@ -12,6 +12,9 @@ RUN apt-get install nano;
 ADD hdfs-config/hadoop-env.sh $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 ADD hdfs-config/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 ADD hdfs-config/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
+ADD hdfs-config/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
+
 ADD hdfs-config/workers $HADOOP_HOME/etc/hadoop/workers
 
 ADD hdfs-config/bootstrap.sh /usr/local/bootstrap.sh

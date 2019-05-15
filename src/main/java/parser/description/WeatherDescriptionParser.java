@@ -1,7 +1,8 @@
-package parser;
+package parser.description;
 
 import model.CityModel;
 import model.WeatherDescriptionPojo;
+import org.apache.spark.sql.Row;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,4 +43,40 @@ public class WeatherDescriptionParser {
         }
 
 
+    public static Iterator<WeatherDescriptionPojo> parseParquetRow(Row row) {
+
+        List<WeatherDescriptionPojo> result = new ArrayList<>();
+
+        String[] headers = row.schema().fieldNames();
+        int noHeaderItems = headers.length;
+
+        for (int i=1; i<noHeaderItems; i++) {
+
+            String dateTime = row.getString(0);
+            String cityName = headers[i];
+
+            String stringDescription;
+            try {
+                stringDescription = String.valueOf(row.getAs(cityName));
+                if (stringDescription!= null && !stringDescription.isEmpty() && !dateTime.isEmpty()) {
+                    WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(cityName, dateTime, stringDescription);
+
+                    CityModel keyModel = citiesMap.get(cityName);
+                    if (citiesMap!=null && keyModel!=null) {
+                        wdp.setDateTimezone(keyModel.getTimezone());
+                    }
+                    result.add(wdp);
+                }
+
+            }catch (NullPointerException e) {
+
+            }
+            catch (ClassCastException e) {
+
+            }
+        }
+
+
+        return result.iterator();
     }
+}
