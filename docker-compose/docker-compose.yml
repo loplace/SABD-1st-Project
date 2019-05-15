@@ -91,3 +91,16 @@ services:
             - TZ_PORT=8888
         stdin_open: true
         tty: true
+
+    hbase:
+        image: erreesse/hbase
+        container_name: hbase
+        hostname: hbase
+        networks:
+            - hadoop_network
+        ports:
+            - "16010:16010"
+        depends_on:
+            - master
+        stdin_open: true
+        tty: true

@@ -58,13 +58,11 @@ CMD /usr/local/bootstrap.sh
 
 # # HDFS ports
 EXPOSE 9866 9867 9870 9864 9868 9820 9000
-#EXPOSE 54310
 # # Mapred ports
 # EXPOSE 10020 19888
 
 # YARN ports
 EXPOSE 8030 8031 8032 8033 8040 8042 8088
-
 # #Other ports
 # EXPOSE 49707 2122
 #
