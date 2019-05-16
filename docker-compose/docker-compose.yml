@@ -15,6 +15,7 @@ services:
             - "5555:5555"
         volumes: 
             - ./nifi_conf:/usr/local/nifi/conf/flow
+            - ./nifi_extensions:/usr/local/nifi/extensions
         stdin_open: true
         tty: true
 

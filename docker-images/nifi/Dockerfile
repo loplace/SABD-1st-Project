@@ -17,6 +17,7 @@ ADD config/nifi.properties $NIFI_HOME/conf
 #ADD config/flow.xml.gz $NIFI_HOME/conf
 
 VOLUME $NIFI_HOME/conf/flow
+VOLUME $NIFI_HOME/extensions
 
 RUN mkdir /data; mkdir /data/hdfsconf
 ADD hdfs-config/core-site.xml /data/hdfsconf
