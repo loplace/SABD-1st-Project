@@ -4,6 +4,7 @@ import model.CityModel;
 import model.WeatherDescriptionPojo;
 import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.JavaRDD;
+import parser.rddloader.WeatherRDDLoaderFromKafka;
 import parser.rddloader.WeatherRDDLoaderFromParquetFile;
 import parser.rddloader.WeatherRDDLoaderFromTextFile;
 import parser.validators.IMeasurementValidator;
@@ -34,6 +35,10 @@ public class HDFSDataLoader {
             return new WeatherRDDLoaderFromParquetFile(cities)
                     .loadWeatherMeasurementPojoRDD(filePath,validator);
         }
+        if (fileFormat.equals("kafka")) {
+            return new WeatherRDDLoaderFromKafka(cities)
+                    .loadWeatherMeasurementPojoRDD(filePath,validator);
+        }
         return null;
     }
 
@@ -44,6 +49,10 @@ public class HDFSDataLoader {
         }
         if (fileFormat.equals("parquet")) {
             return new WeatherRDDLoaderFromParquetFile(cities)
+                    .loadWeatherDescriptionPojoRDD(filePath);
+        }
+        if (fileFormat.equals("kafka")) {
+            return new WeatherRDDLoaderFromKafka(cities)
                     .loadWeatherDescriptionPojoRDD(filePath);
         }
         return null;
@@ -90,6 +99,26 @@ public class HDFSDataLoader {
                     break;
                 case WEATHER_DESC:
                     result = AppConfiguration.getProperty("dataset.parquet.weatherdesc");
+                    break;
+                default:
+                    result = "";
+            }
+        }
+
+        if (fileFormat.equals("kafka")) {
+            // ritorna i topic name
+            switch(datasetName) {
+                case TEMPERATURE:
+                    result = AppConfiguration.getProperty("dataset.kafka.temperature");
+                    break;
+                case PRESSURE:
+                    result = AppConfiguration.getProperty("dataset.kafka.pressure");
+                    break;
+                case HUMIDITY:
+                    result = AppConfiguration.getProperty("dataset.kafka.humidity");
+                    break;
+                case WEATHER_DESC:
+                    result = AppConfiguration.getProperty("dataset.kafka.weatherdesc");
                     break;
                 default:
                     result = "";
