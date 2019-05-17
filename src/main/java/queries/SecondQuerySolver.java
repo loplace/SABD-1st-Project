@@ -18,7 +18,6 @@ import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static utils.hdfs.HDFSDataLoader.DATASETNAME.*;
 

@@ -15,7 +15,7 @@ public class CityAttributesPreprocessor {
 
         this.cap = new CityAttributeParser();
         cap.parse();
-        LocationInfoAssigner.locationInfoAssign(cap.getCities());
+        //LocationInfoAssigner.locationInfoAssign(cap.getCities());
 
         return this.cap;
     }

@@ -14,8 +14,9 @@ import utils.hdfs.HDFSDataLoader;
 import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
 
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static utils.hdfs.HDFSDataLoader.DATASETNAME.TEMPERATURE;
 

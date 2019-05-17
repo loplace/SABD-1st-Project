@@ -12,7 +12,9 @@ import java.util.Map;
 
 public class CityAttributeParser {
 
-    public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes");
+    //public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes");
+    public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes_processed");
+
 
     private Map<String, CityModel> cities = null;
     private JavaSparkContext jsc;
@@ -44,48 +46,19 @@ public class CityAttributeParser {
         String strLatitude = tokens[1];
         String strLongitude = tokens[2];
 
+        String strTimeZone = tokens[3];
+        String strCountry = tokens[4];
+
+
         double latitude = Double.parseDouble(strLatitude);
         double longitude = Double.parseDouble(strLongitude);
 
         CityModel model = new CityModel(cityName,latitude,longitude);
+        model.setTimezone(strTimeZone);
+        model.setCountry(strCountry);
+
         return model;
     }
-
-    /*public void parse () throws IOException {
-
-
-        Iterable<CSVRecord> records;
-        Reader in = null;
-        InputStream wrappedStream=null;
-        try {
-            in = new FileReader(csvpath);
-            if (csvpath.startsWith("hdfs://")) {
-                Path hdfsreadpath = new Path(csvpath);
-                wrappedStream = HDFSHelper.getInstance().getFs().open(hdfsreadpath).getWrappedStream();
-                in = new InputStreamReader(wrappedStream);
-            }
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
-
-        records = CSVFormat.DEFAULT.withHeader().parse(in);
-
-
-        Iterator<CSVRecord> iterator = records.iterator();
-        while (iterator.hasNext()) {
-
-            CSVRecord record = iterator.next();
-            String cityName = record.get("City");
-            String latitude = record.get("Latitude");
-            String longitude = record.get("Longitude");
-
-            CityModel newCity = new CityModel(cityName,Double.parseDouble(latitude),Double.parseDouble(longitude));
-            this.cities.put(cityName,newCity);
-
-        }
-
-
-    }*/
 
     public void printCities(){
 
