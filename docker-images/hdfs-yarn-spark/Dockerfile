@@ -12,14 +12,9 @@ RUN apt-get install nano;
 ADD hdfs-config/hadoop-env.sh $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 ADD hdfs-config/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 ADD hdfs-config/hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-
 ADD hdfs-config/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
-
 ADD hdfs-config/workers $HADOOP_HOME/etc/hadoop/workers
 
-ADD hdfs-config/bootstrap.sh /usr/local/bootstrap.sh
-RUN chown root:root /usr/local/bootstrap.sh
-RUN chmod 700 /usr/local/bootstrap.sh
 
 # SPARK LIB FILES
 RUN wget http://it.apache.contactlab.it/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz; 
@@ -53,6 +48,9 @@ VOLUME /sabd/jar
 ENV PATH $PATH:$SPARK_HOME/bin:$HADOOP_PREFIX/bin
 WORKDIR /sabd
 
+ADD hdfs-config/bootstrap.sh /usr/local/bootstrap.sh
+RUN chown root:root /usr/local/bootstrap.sh
+RUN chmod 700 /usr/local/bootstrap.sh
 ENV BOOTSTRAP /usr/local/bootstrap.sh
 CMD /usr/local/bootstrap.sh
 
