@@ -1,7 +1,7 @@
 version: "2"
 
 networks:
-    hadoop_network:
+    app_network:
         driver: bridge
     
 services:
@@ -10,7 +10,7 @@ services:
         container_name: nifi
         hostname: nifi
         networks:
-            - hadoop_network
+            - app_network 
         ports:
             - "5555:5555"
             - "43210:43210" #remote degugging port
@@ -27,7 +27,7 @@ services:
         container_name: master
         hostname: master
         networks:
-            - hadoop_network
+            - app_network
         ports:
             - "9870:9870"
             - "8088:8088"
@@ -43,7 +43,7 @@ services:
         container_name: slave1
         hostname: slave1
         networks:
-            - hadoop_network
+            - app_network
         ports:
             - "9864:9864"
         depends_on:
@@ -59,7 +59,7 @@ services:
         container_name: slave2
         hostname: slave2
         networks:
-            - hadoop_network
+            - app_network
         ports:
             - "9863:9864"
         depends_on:
@@ -75,7 +75,7 @@ services:
         container_name: slave3
         hostname: slave3
         networks:
-            - hadoop_network
+            - app_network
         ports:
             - "9862:9864"
         depends_on:
@@ -93,7 +93,7 @@ services:
         container_name: citylocationhelper
         hostname: citylocationhelper
         networks:
-            - hadoop_network
+            - app_network
         ports:
             - "8888:8888"
         environment:
@@ -108,7 +108,7 @@ services:
         container_name: hbase
         hostname: hbase
         networks:
-            - hadoop_network
+            - app_network
         ports:
             - "16010:16010"
         depends_on:
@@ -117,33 +117,28 @@ services:
         tty: true
         entrypoint: /entrypoint.sh
 
-#   https://hub.docker.com/r/bitnami/kafka
     zookeeper:
-        #image: 'bitnami/zookeeper:latest'
-        #image: confluentinc/cp-zookeper:4.0.0
         image: wurstmeister/zookeeper
         container_name: zookeeper
         hostname: zookeeper
+        networks:
+            - app_network
         ports:
             - '2181:2181'
         environment:
             - ALLOW_ANONYMOUS_LOGIN=yes
   
     kafka:
-        #image: 'bitnami/kafka'
         image: wurstmeister/kafka
         container_name: kafka
         hostname: kafka
+        networks:
+            - app_network
         ports:
             - '9092:9092'
         depends_on:
             - zookeeper
         environment:
-            - KAFKA_ADVERTISED_HOST_NAME=0.0.0.0
+            - KAFKA_ADVERTISED_HOST_NAME=kafka
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-            - KAFKA_ADVERTISED_PORT=9092
-            - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-            - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
-        #   - KAFKA_CREATE_TOPICS="city_attributes:1:3,temperature:1:1:compact"
-        #    - KAFKA_CREATE_TOPICS="city_attribute:1:1"
-        #    - ALLOW_PLAINTEXT_LISTENER=yes
+            - KAFKA_CREATE_TOPICS=city_attributes:1:3,temperature:1:1:compact
