@@ -13,6 +13,7 @@ services:
             - hadoop_network
         ports:
             - "5555:5555"
+            - "43210:43210"
         volumes: 
             - ./nifi_conf:/usr/local/nifi/conf/flow
             - ./nifi_extensions:/usr/local/nifi/extensions
@@ -100,6 +101,7 @@ services:
             - TZ_PORT=8888
         stdin_open: true
         tty: true
+        restart: on-failure
 
     hbase:
         image: erreesse/hbase

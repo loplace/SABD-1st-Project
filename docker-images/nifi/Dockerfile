@@ -14,6 +14,7 @@ ENV NIFI_HOME /usr/local/nifi
 RUN cd $NIFI_HOME/conf; mv nifi.properties nifi.properties-old;
 
 ADD config/nifi.properties $NIFI_HOME/conf
+ADD config/bootstrap.conf $NIFI_HOME/conf
 #ADD config/flow.xml.gz $NIFI_HOME/conf
 
 VOLUME $NIFI_HOME/conf/flow
@@ -31,4 +32,7 @@ RUN wget $DATASET_REPO/city_attributes.csv; wget $DATASET_REPO/temperature.csv; 
 # exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
 CMD $NIFI_HOME/bin/nifi.sh start ; exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
 
-EXPOSE 5555
+EXPOSE 5555 
+
+# nifi remote debugging
+EXPOSE 43210
