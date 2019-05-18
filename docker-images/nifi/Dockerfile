@@ -20,9 +20,10 @@ ADD config/bootstrap.conf $NIFI_HOME/conf
 VOLUME $NIFI_HOME/conf/flow
 VOLUME $NIFI_HOME/extensions
 
-RUN mkdir /data; mkdir /data/hdfsconf
+RUN mkdir /data; mkdir /data/hdfsconf; mkdir /data/hbaseconf
 ADD hdfs-config/core-site.xml /data/hdfsconf
 ADD hdfs-config/hdfs-site.xml /data/hdfsconf
+ADD hbase-config/hbase-site.xml /data/hbaseconf/
 
 ENV DATASET_REPO http://www.acsiciclismoabruzzo.it/sabd/
 WORKDIR /data

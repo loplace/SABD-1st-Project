@@ -28,6 +28,16 @@ put 'query1', '2015', 'cities:list', '[Eilat]'
 put 'query1', '2013', 'cities:list', '[Las Vegas, Eilat, Phoenix]'
 put 'query1', '2017', 'cities:list', '[Phoenix, Eilat, Las Vegas]'
 
+Example Query1 JSON
+{
+	tablename: "query1",
+	rowkey: "2014",
+	columnfamily: "cities",
+	columns: {
+			list: "[Las Vegas, Eilat, Phoenix]"
+			}	 
+}
+
 --------------------------------------------------------------------------------
 				QUERY 2
 
@@ -54,6 +64,23 @@ COLUMN FAMILY: humidity
 	COLONNA: devstd
 	COLONNA: min
 	COLONNA: max
+
+Example query2 JSON
+
+{
+	tablename: "query2",
+	rowkey: "nazione_anno_mese",
+	columnfamily: "temperature",
+	columns: {
+		nazione: stringa,
+		anno: int,
+		mese: stringa,
+		mean: valore,
+		devstd: valore,
+		min: valore,
+		max: valore
+	} 
+}
 
 
 Query 2 completed in 11.597661 seconds
@@ -92,7 +119,18 @@ COLUMN FAMILY: 2017_datas
 COLUMN FAMILY: 2016_datas 
 	COLONNA: abs_mean_diff
 	COLONNA: position
-	
+
+Example query3 JSON
+
+{
+	tablename: "query3",
+	rowkey: nome_della_nazione,
+	columnfamily: "2017_datas",
+	columns: {
+		abs_mean_diff: valore,
+		position: valore
+	}
+}
 
 Query 3 completed in 14.927721 seconds
 Top 3 of 2017 with relative position in 2016
