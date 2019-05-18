@@ -48,15 +48,14 @@ public class WeatherRDDLoaderFromKafka {
         props.put("group.id", "RDD_LOADER_FROM_KAFKA");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("key.deserializer", StringDeserializer.class);
+        props.put("value.deserializer", StringDeserializer.class);
         kafkaConsumer = new KafkaConsumer<>(props);
     }
 
     private TopicPartition subscribeToTopic(String topicName) {
-        kafkaConsumer.subscribe(Collections.singletonList(topicName));
         TopicPartition topicPartition = new TopicPartition(topicName, 0);
-        kafkaConsumer.poll(0);
+        kafkaConsumer.assign(Collections.singletonList(topicPartition));
 
         return topicPartition;
     }
@@ -88,7 +87,7 @@ public class WeatherRDDLoaderFromKafka {
 
     }
 
-    public JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojoRDD(String topicName, IMeasurementValidator validator) {
+    public synchronized JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojoRDD(String topicName, IMeasurementValidator validator) {
 
         TopicPartition topicPartition = subscribeToTopic(topicName);
         OffsetRange[] offsetRanges = getOffsetRanges(topicPartition);
@@ -103,7 +102,7 @@ public class WeatherRDDLoaderFromKafka {
         JavaRDD<String> dataSetLines =
                 rdd.map(message -> message.value()).
                         flatMap(block -> {
-                            String lines[] = block.split("\\r?\\n");
+                            String lines[] = block.split("[\\r\\n]+");
                             return Arrays.asList(lines).iterator();
                         });
 
@@ -130,7 +129,12 @@ public class WeatherRDDLoaderFromKafka {
                 LocationStrategies.PreferConsistent()
         );
 
-        JavaRDD<String> dataSetLines = rdd.map(value -> value.value());
+        JavaRDD<String> dataSetLines = rdd.map(message -> message.value()).
+                flatMap(block -> {
+                    String lines[] = block.split("[\\r\\n]+");
+                    return Arrays.asList(lines).iterator();
+                });
+
         String csvHeader = dataSetLines.first();
 
         JavaRDD<String> filteredHeaderRDD = dataSetLines.filter(line -> !line.equals(csvHeader));

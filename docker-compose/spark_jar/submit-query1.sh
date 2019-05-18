@@ -1,4 +1,5 @@
 #!/bin/bash
+
 $SPARK_HOME/bin/spark-submit \
 --class "queries.FirstQuerySolver" \
 --master "local" \

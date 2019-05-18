@@ -88,7 +88,7 @@ get 'table1', 'row1'
 Now starting HBase Shell...
 "
     sleep 5
-    /hbase/bin/hbase shell /create_tables
+    /hbase/bin/hbase shell < create_tables
     /hbase/bin/hbase shell
 else
     echo "
