@@ -18,10 +18,7 @@ import parser.validators.IMeasurementValidator;
 import utils.configuration.AppConfiguration;
 import utils.spark.SparkContextSingleton;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class WeatherRDDLoaderFromKafka {
 
@@ -73,7 +70,7 @@ public class WeatherRDDLoaderFromKafka {
 
         kafkaConsumer.seekToBeginning(Collections.singletonList(topicPartition));
         long startingOffset = kafkaConsumer.position(topicPartition);
-        System.out.println("Starting position is:" + startingOffset);
+        System.out.println("Starting offset is:" + startingOffset);
 
         OffsetRange[] offsetRanges = {
                 // topic, partition, inclusive starting offset, exclusive ending offset
@@ -103,7 +100,13 @@ public class WeatherRDDLoaderFromKafka {
                 LocationStrategies.PreferConsistent()
         );
 
-        JavaRDD<String> dataSetLines = rdd.map(value -> value.value());
+        JavaRDD<String> dataSetLines =
+                rdd.map(message -> message.value()).
+                        flatMap(block -> {
+                            String lines[] = block.split("\\r?\\n");
+                            return Arrays.asList(lines).iterator();
+                        });
+
         String csvHeader = dataSetLines.first();
 
         JavaRDD<String> filteredHeaderRDD = dataSetLines.filter(line -> !line.equals(csvHeader));

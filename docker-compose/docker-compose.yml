@@ -13,7 +13,7 @@ services:
             - app_network 
         ports:
             - "5555:5555"
-            - "43210:43210" #remote degugging port
+            - "43210:43210" #remote intellij degugging port
         volumes: 
             - ./nifi_conf:/usr/local/nifi/conf/flow
             - ./nifi_extensions:/usr/local/nifi/extensions
@@ -31,6 +31,8 @@ services:
         ports:
             - "9870:9870"
             - "8088:8088"
+            - "54310:54310"
+            - "43211:43211" #remote intellij degugging port
         volumes: 
             - ./spark_jar:/sabd/jar
         stdin_open: true
@@ -141,4 +143,5 @@ services:
         environment:
             - KAFKA_ADVERTISED_HOST_NAME=kafka
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-            - KAFKA_CREATE_TOPICS=city_attributes:1:3,temperature:1:1:compact
+            - KAFKA_LOG_RETENTION_HOURS=1
+            - KAFKA_MESSAGE_MAX_BYTES=2000000000

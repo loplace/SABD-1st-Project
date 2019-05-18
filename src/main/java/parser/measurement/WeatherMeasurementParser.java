@@ -4,7 +4,6 @@ import model.CityModel;
 import model.WeatherMeasurementPojo;
 import org.apache.spark.sql.Row;
 import parser.validators.IMeasurementValidator;
-import scala.xml.parsing.FatalError;
 
 import java.util.ArrayList;
 import java.util.Iterator;

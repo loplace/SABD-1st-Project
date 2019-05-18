@@ -66,3 +66,6 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 #
 # SSH port
 EXPOSE 22
+
+# Spark remote debugging for intellij
+EXPOSE 43211

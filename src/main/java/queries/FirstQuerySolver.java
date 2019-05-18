@@ -41,6 +41,7 @@ public class FirstQuerySolver {
         // Load and parse data
         HDFSDataLoader.setFileFormat(fileFormat);
         String pathDescription = HDFSDataLoader.getDataSetFilePath(WEATHER_DESC);
+        System.out.println("fileFormat: "+fileFormat);
         System.out.println("pathDescription: "+pathDescription);
 
         Integer[] months = {3,4,5};
