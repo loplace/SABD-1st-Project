@@ -68,18 +68,15 @@ COLUMN FAMILY: humidity
 Example query2 JSON
 
 {
-	tablename: "query2",
 	rowkey: "nazione_anno_mese",
 	columnfamily: "temperature",
-	columns: {
-		nazione: stringa,
-		anno: int,
-		mese: stringa,
-		mean: valore,
-		devstd: valore,
-		min: valore,
-		max: valore
-	} 
+	nazione: stringa,
+	anno: int,
+	mese: stringa,
+	mean: valore,
+	devstd: valore,
+	min: valore,
+	max: valore
 }
 
 

@@ -73,7 +73,7 @@ public class HDFSHelper {
         return instance;
     }
 
-    public String readFromHDFS(String folderpath, String filename){
+    public String readStringFromHDFS(String folderpath, String filename){
 
         logger.info("Beginning Read on HDFS");
 
@@ -126,7 +126,7 @@ public class HDFSHelper {
         return out;
     }
 
-    public void writeToHDFS(String folderpath, String filename, Serializable obj) {
+    public void writeBytesToHDFS(String folderpath, String filename, Serializable obj) {
 
         logger.info("Beginning Write on HDFS");
 
@@ -174,9 +174,9 @@ public class HDFSHelper {
 
         HDFSHelper hdfsInstance = HDFSHelper.getInstance();
 
-        hdfsInstance.writeToHDFS("/demofolder","HelloWorld.txt",demoContent);
+        hdfsInstance.writeBytesToHDFS("/demofolder","HelloWorld.txt",demoContent);
 
-        String s = hdfsInstance.readFromHDFS("/demofolder", "HelloWorld.txt");
+        String s = hdfsInstance.readStringFromHDFS("/demofolder", "HelloWorld.txt");
 
         System.out.println(s);
 
