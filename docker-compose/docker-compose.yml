@@ -145,3 +145,14 @@ services:
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
             - KAFKA_LOG_RETENTION_HOURS=1
             - KAFKA_MESSAGE_MAX_BYTES=2000000000
+    
+    jetty:
+        image: jetty
+        container_name: jetty
+        hostname: jetty
+        networks:
+            - app_network
+        ports:
+            - '65000:8080'
+        volumes: 
+            - ./jetty_wars:/var/lib/jetty/webapps

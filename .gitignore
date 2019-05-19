@@ -3,4 +3,5 @@
 target
 out
 docker-compose/spark_jar/SABD-project1-1.0-SNAPSHOT.jar
-docker-compose/nifi_extensions
+docker-compose/nifi_extensionstarget/
+sabd-web-gui/target

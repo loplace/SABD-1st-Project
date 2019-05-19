@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<head>
+  <title>SABD 1819</title>
+  <!-- CSS -->
+  <link href="assets/css/bootstrap.css" rel="stylesheet" />
+  <link href="assets/css/bootstrap-responsive.css" rel="stylesheet" />
+  <link href="assets/css/docs.css" rel="stylesheet" />
+  <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet" />
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+      <script src="assets/js/html5shiv.js"></script>
+  <![endif]-->
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+      ================================================== -->
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            </button>
+            <a class="brand" href="#">Sistemi e architetture per big data</a>
+          </div>
+        </div>
+      </div>
+
+<!-- Subhead
+  ================================================== -->
+  <header class="jumbotron subhead" id="overview">
+    <div class="container">
+      <br/><br/><h1>SABD 1819 Progetto 1</h1>
+      <p class="lead">Progetto su elaborazione batch</p>
+    </div>
+  </header>
+
+
+  <div class="container">
+
+    <!-- Docs nav
+      ================================================== -->
+      <div class="row">
+        <div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav">
+            <li><a href="#query1"><i class="icon-chevron-right"></i> Query 1</a></li>
+            <li><a href="#query2"><i class="icon-chevron-right"></i> Query 2</a></li>
+            <li><a href="#query3"><i class="icon-chevron-right"></i> Query 3</a></li>
+          </ul>
+        </div>
+        <div class="span9">
+
+
+
+        <!-- Query 1
+          ================================================== -->
+          <section id="query1">
+            <div class="page-header">
+              <h1>Query 1</h1>
+            </div>
+            <p class="lead">Per ogni anno del dataset individuare le citta che hanno almeno 15 giorni al mese di tempo sereno nei mesi di marzo, aprile e maggio</p>
+
+            <div class="row-fluid">
+              <table class="table table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>Anno</th>
+                  <th>Elenco citta</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2013</td>
+                  <td>[Las Vegas, Eilat, Phoenix]</td>
+                </tr>
+                <tr>
+                  <td>2014</td>
+                  <td>[Eilat, Jerusalem, Las Vegas]</td>
+                </tr>
+                <tr>
+                  <td>2015</td>
+                  <td>[Eilat]</td>
+                </tr>
+                <tr>
+                  <td>2016</td>
+                  <td>[Eilat, Phoenix, Las Vegas]</td>
+                </tr>
+                <tr>
+                  <td>2017</td>
+                  <td>[Phoenix, Eilat, Las Vegas]</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+        </section>
+
+
+        <!-- Query 2
+          ================================================== -->
+          <section id="query2">
+            <div class="page-header">
+              <h1>Query 2</h1>
+            </div>
+            <p class="lead">Per ogni anno del dataset individuare le citta che hanno almeno 15 giorni al mese di tempo sereno nei mesi di marzo, aprile e maggio</p>
+
+            <div class="row-fluid">
+              <p class="lead">Humidity</p>
+              <table class="table table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                  <th>Year</th>
+                  <th>Month</th>
+                  <th>Mean</th>
+                  <th>DevStd</th>
+                  <th>Min</th>
+                  <th>Max</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="lead">Pressure</p>
+              <table class="table table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                  <th>Year</th>
+                  <th>Month</th>
+                  <th>Mean</th>
+                  <th>DevStd</th>
+                  <th>Min</th>
+                  <th>Max</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="lead">Temperature</p>
+              <table class="table table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                  <th>Year</th>
+                  <th>Month</th>
+                  <th>Mean</th>
+                  <th>DevStd</th>
+                  <th>Min</th>
+                  <th>Max</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+                <tr>
+                  <td>Israel</td>
+                  <td>2012</td>
+                  <td>10</td>
+                  <td>57.67</td>
+                  <td>16.48</td>
+                  <td>12.00</td>
+                  <td>100.00</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+        </section>
+
+
+        <!-- Query 3
+          ================================================== -->
+          <section id="query3">
+            <div class="page-header">
+              <h1>Query 3</h1>
+            </div>
+            <p class="lead">Individuare, per ogni nazione, le 3 citta che hanno registrato nel 2017 la massima differenza di temperature medie nella fascia oraria locale 12:00-15:00 nei mesi di giugno, luglio, agosto e settembre rispetto ai mesi di gennaio, febbraio, marzo e aprile. Confrontare la posizione delle citta nella classifica dell’anno precedente (2016).</p>
+
+            <div class="row-fluid">
+              <table class="table table-condensed table-hover">
+              <thead>
+                <tr>                         
+                  <th>City</th>
+                  <th>Abs Mean Diff 2017</th>
+                  <th>Pos 2017</th>
+                  <th>Abs Mean Diff 2017</th>
+                  <th>Pos 2017</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Minneapolis</td>
+                  <td>19.489747</td>
+                  <td>1</td>
+                  <td>20.490154</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>New York</td>
+                  <td>17.618272</td>
+                  <td>2</td>
+                  <td>18.669726</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>Boston</td>
+                  <td>17.396266</td>
+                  <td>3</td>
+                  <td>19.108678</td>
+                  <td>5</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+        </section>
+
+
+
+
+      </div>
+    </div>
+
+  </div>
+
+<!-- Footer
+  ================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <p>Credits: Federico Ronci, Antonio Schiazza</p>
+    </div>
+  </footer>
+
+<!-- Javascript
+  ================================================== -->
+  <script src="assets/js/jquery.js"></script>
+  <script src="assets/js/bootstrap-386.js"></script>
+  <script src="assets/js/bootstrap-transition.js"></script>
+  <script src="assets/js/bootstrap-alert.js"></script>
+  <script src="assets/js/bootstrap-modal.js"></script>
+  <script src="assets/js/bootstrap-dropdown.js"></script>
+  <script src="assets/js/bootstrap-scrollspy.js"></script>
+  <script src="assets/js/bootstrap-tab.js"></script>
+  <script src="assets/js/bootstrap-tooltip.js"></script>
+  <script src="assets/js/bootstrap-popover.js"></script>
+  <script src="assets/js/bootstrap-button.js"></script>
+  <script src="assets/js/bootstrap-collapse.js"></script>
+  <script src="assets/js/bootstrap-carousel.js"></script>
+  <script src="assets/js/bootstrap-typeahead.js"></script>
+  <script src="assets/js/bootstrap-affix.js"></script>
+
+  <script src="assets/js/holder/holder.js"></script>
+  <script src="assets/js/google-code-prettify/prettify.js"></script>
+
+  <!--<script src="assets/js/application.js"></script>-->
+
+</body>
+</html>
