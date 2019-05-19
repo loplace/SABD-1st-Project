@@ -27,7 +27,7 @@ RUN mkdir $SPARK_HOME/yarn-remote-client
 # YARN CONFIG FILES
 ADD yarn-config/yarn-remote-client/core-site.xml $SPARK_HOME/external/spark-native-yarn/conf/
 ADD yarn-config/yarn-remote-client/yarn-site.xml $SPARK_HOME/external/spark-native-yarn/conf/
-ADD yarn-config/yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+ADD yarn-config/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 
 # SPARK CONFIG FILES
 ADD spark-config/spark-env.sh $SPARK_HOME/conf
