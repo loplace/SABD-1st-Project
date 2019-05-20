@@ -25,6 +25,8 @@ ADD hdfs-config/core-site.xml /data/hdfsconf
 ADD hdfs-config/hdfs-site.xml /data/hdfsconf
 ADD hbase-config/hbase-site.xml /data/hbaseconf/
 
+ADD nar/nifi-location-info-retriever-nar-1.0-SNAPSHOT.nar $NIFI_HOME/lib
+
 ENV DATASET_REPO http://www.acsiciclismoabruzzo.it/sabd/
 WORKDIR /data
 RUN wget $DATASET_REPO/city_attributes.csv; wget $DATASET_REPO/temperature.csv; wget $DATASET_REPO/weather_description.csv; wget $DATASET_REPO/pressure.csv; wget $DATASET_REPO/humidity.csv; 

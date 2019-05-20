@@ -13,6 +13,7 @@ import parser.measurement.WeatherMeasurementParser;
 import parser.validators.IMeasurementValidator;
 import utils.spark.SparkContextSingleton;
 
+import java.util.List;
 import java.util.Map;
 
 public class WeatherRDDLoaderFromParquetFile {
@@ -49,7 +50,6 @@ public class WeatherRDDLoaderFromParquetFile {
         JavaRDD<WeatherDescriptionPojo> result = rowJavaRDD.flatMap(
                 row -> WeatherDescriptionParser.parseParquetRow(row)
         );
-
         return result;
     }
 }

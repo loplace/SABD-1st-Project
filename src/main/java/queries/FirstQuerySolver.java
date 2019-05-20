@@ -13,6 +13,7 @@ import scala.Tuple4;
 import utils.configuration.AppConfiguration;
 import utils.hdfs.HDFSDataLoader;
 import utils.hdfs.HDFSHelper;
+import utils.kafka.MyKafkaProducer;
 import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
 import utils.timekeeper.TimeKeeper;
@@ -115,6 +116,9 @@ public class FirstQuerySolver {
         List<Tuple2<Integer, Iterable<String>>> list = resultRDD.collect();
         tk.endPhase("Collecting Query 1");
 
+        /*MyKafkaProducer mkp = new MyKafkaProducer();
+        mkp.putQueryResultonKafka("query1results",null,list);
+*/
 
         int count = 0;
         for (Tuple2 o: list) {
@@ -130,8 +134,8 @@ public class FirstQuerySolver {
         String execTimes= tk.getTableTimes();
         System.out.println(execTimes);
 
-        HDFSHelper.getInstance().writeStringToHDFS("/output","query1.txt",outPutResults);
-        HDFSHelper.getInstance().writeStringToHDFS("/output","query1.times.txt",execTimes);
+        HDFSHelper.getInstance().writeStringToHDFS("/output","query1_"+fileFormat+".txt",outPutResults);
+        HDFSHelper.getInstance().writeStringToHDFS("/output","query1_"+fileFormat+"_times.txt",execTimes);
 
     }
 

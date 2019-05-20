@@ -50,6 +50,8 @@ public class WeatherDescriptionParser {
         String[] headers = row.schema().fieldNames();
         int noHeaderItems = headers.length;
 
+        String lastError;
+
         for (int i=1; i<noHeaderItems; i++) {
 
             String dateTime = row.getString(0);
@@ -57,22 +59,25 @@ public class WeatherDescriptionParser {
 
             String stringDescription;
             try {
-                stringDescription = String.valueOf(row.getAs(cityName));
-                if (stringDescription!= null && !stringDescription.isEmpty() && !dateTime.isEmpty()) {
-                    WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(cityName, dateTime, stringDescription);
+                Object obj = row.getAs(cityName);
 
-                    CityModel keyModel = citiesMap.get(cityName);
-                    if (citiesMap!=null && keyModel!=null) {
-                        wdp.setDateTimezone(keyModel.getTimezone());
+                if(obj!=null) {
+                    stringDescription = (String) obj;
+                    if (stringDescription!= null && !stringDescription.isEmpty() && !dateTime.isEmpty()) {
+                        WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(cityName, dateTime, stringDescription);
+
+                        CityModel keyModel = citiesMap.get(cityName);
+                        if (citiesMap!=null && keyModel!=null) {
+                            wdp.setDateTimezone(keyModel.getTimezone());
+                        }
+                        result.add(wdp);
                     }
-                    result.add(wdp);
                 }
-
             }catch (NullPointerException e) {
-
+                lastError = e.getMessage();
             }
             catch (ClassCastException e) {
-
+                lastError = e.getMessage();
             }
         }
 
