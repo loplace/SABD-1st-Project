@@ -38,12 +38,11 @@ public class Query2BackingBean {
     private void initResults() {
         try {
             resultBeansTemperature.setDataType("Temperature");
-            resultBeansTemperature.setDataBeans(hbaseClient.getResults(Query2TableDescriptor.TEMPERATURE_COLUMN_FAMILY,null));
-
             resultBeansHumidity.setDataType("Humidity");
-            resultBeansHumidity.setDataBeans(hbaseClient.getResults(Query2TableDescriptor.HUMIDITY_COLUMN_FAMILY,null));
-
             resultBeansPressure.setDataType("Pressure");
+
+            resultBeansTemperature.setDataBeans(hbaseClient.getResults(Query2TableDescriptor.TEMPERATURE_COLUMN_FAMILY,null));
+            resultBeansHumidity.setDataBeans(hbaseClient.getResults(Query2TableDescriptor.HUMIDITY_COLUMN_FAMILY,null));
             resultBeansPressure.setDataBeans(hbaseClient.getResults(Query2TableDescriptor.PRESSURE_COLUMN_FAMILY,null));
 
         } catch (IOException e) {
