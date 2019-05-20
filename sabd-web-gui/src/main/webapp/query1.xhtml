@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:h = "http://java.sun.com/jsf/html"
+      xmlns:ui = "http://java.sun.com/jsf/facelets">
+
+<h:body>
+    <ui:composition template = "templates/common.xhtml">
+        <ui:define name = "content">
+
+            <!-- Query 1
+          ================================================== -->
+            <section id="query1">
+                <div class="page-header">
+                    <h1>Query 1</h1>
+                </div>
+                <p class="lead">Per ogni anno del dataset individuare le citta che hanno almeno 15 giorni al mese di tempo sereno nei mesi di marzo, aprile e maggio</p>
+
+                <div class="row-fluid">
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                        <tr>
+                            <th>Anno</th>
+                            <th>Elenco citta</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{Query1BackingBean.resultBeans}" var="r">
+                            <tr>
+                                <td>#{r.year}</td>
+                                <td>#{r.citiesList}</td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+        </ui:define>
+    </ui:composition>
+
+</h:body>
+</html>

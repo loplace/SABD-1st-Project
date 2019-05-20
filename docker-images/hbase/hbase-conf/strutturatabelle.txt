@@ -47,6 +47,11 @@ Individuare, per ogni nazione, la media, la deviazione standard, il minimo, il m
 Proposta modellazione tabella HBASE
 ROWKEY: protrebbe essere la nazione_anno_mese
 
+COLUMN FAMILY: country_info
+	COLONNA country
+	COLONNA year
+	COLONNA month
+
 COLUMN FAMILY: temperature 
 	COLONNA: mean
 	COLONNA: devstd
@@ -100,6 +105,22 @@ Israel          2012    10      1002.98 13.34   959.00  1020.00
 Israel          2013    9       1003.80 17.80   939.00  1026.00
 USA             2013    4       1016.79 6.88    851.00  1049.00
 
+
+put 'query2', 'Israel_2012_10', 'country_info:country', 'Israel'
+put 'query2', 'Israel_2012_10', 'country_info:year', '2012'
+put 'query2', 'Israel_2012_10', 'country_info:month', '10'
+put 'query2', 'Israel_2012_10', 'temperature:mean', '57.67'
+put 'query2', 'Israel_2012_10', 'temperature:devstd', '16.48'
+put 'query2', 'Israel_2012_10', 'temperature:min', '12.00'
+put 'query2', 'Israel_2012_10', 'temperature:max', '100.00'
+put 'query2', 'Israel_2012_10', 'pressure:mean', '57.67'
+put 'query2', 'Israel_2012_10', 'pressure:devstd', '16.48'
+put 'query2', 'Israel_2012_10', 'pressure:min', '12.00'
+put 'query2', 'Israel_2012_10', 'pressure:max', '100.00'
+put 'query2', 'Israel_2012_10', 'humidity:mean', '57.67'
+put 'query2', 'Israel_2012_10', 'humidity:devstd', '16.48'
+put 'query2', 'Israel_2012_10', 'humidity:min', '12.00'
+put 'query2', 'Israel_2012_10', 'humidity:max', '100.00'
 --------------------------------------------------------------------------------
 				QUERY 3
 Individuare, per ogni nazione, le 3 citta che hanno registrato nel 2017 la massima differenza di temperature medie nella fascia oraria locale 12:00-15:00 nei mesi di giugno, luglio, agosto e settembre
@@ -136,3 +157,16 @@ City     	Abs Mean Diff 2017      Pos 2017        Abs Mean Diff 2017      Pos 20
 Minneapolis     19.489747       		1       		20.490154       		2
 New York        17.618272       		2       		18.669726       		10
 Boston  		17.396266       		3       		19.108678       		5
+
+put 'query3', 'Minneapolis', '2017_datas:abs_mean_diff', '19.489747'
+put 'query3', 'Minneapolis', '2017_datas:position', '1'
+put 'query3', 'Minneapolis', '2016_datas:abs_mean_diff', '20.490154'
+put 'query3', 'Minneapolis', '2016_datas:position', '2'
+put 'query3', 'New York', '2017_datas:abs_mean_diff', '17.618272'
+put 'query3', 'New York', '2017_datas:position', '2'
+put 'query3', 'New York', '2016_datas:abs_mean_diff', '18.669726'
+put 'query3', 'New York', '2016_datas:position', '10'
+put 'query3', 'Boston', '2017_datas:abs_mean_diff', '17.396266'
+put 'query3', 'Boston', '2017_datas:position', '3'
+put 'query3', 'Boston', '2016_datas:abs_mean_diff', '19.108678'
+put 'query3', 'Boston', '2016_datas:position', '5'

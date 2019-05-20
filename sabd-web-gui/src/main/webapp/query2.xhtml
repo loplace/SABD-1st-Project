@@ -1,0 +1,111 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:h = "http://java.sun.com/jsf/html"
+      xmlns:ui = "http://java.sun.com/jsf/facelets">
+
+<h:body>
+    <ui:composition template = "templates/common.xhtml">
+        <ui:define name = "content">
+
+            <!-- Query 2
+          ================================================== -->
+            <section id="query2">
+                <div class="page-header">
+                    <h1>Query 2</h1>
+                </div>
+                <p class="lead">Individuare, per ogni nazione, la media, la deviazione standard, il minimo,
+                    il massimo della temperatura, della pressione e dell’umidita registrata
+                    in ogni mese di ogni anno.</p>
+
+                <div class="row-fluid">
+                    <p class="lead">#{Query2BackingBean.resultBeansTemperature.dataType}</p>
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Mean</th>
+                            <th>DevStd</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{Query2BackingBean.resultBeansTemperature.dataBeans}" var="r">
+                            <tr>
+                                <td>#{r.country}</td>
+                                <td>#{r.year}</td>
+                                <td>#{r.month}</td>
+                                <td>#{r.mean}</td>
+                                <td>#{r.devStd}</td>
+                                <td>#{r.min}</td>
+                                <td>#{r.max}</td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                    <p class="lead">#{Query2BackingBean.resultBeansHumidity.dataType}</p>
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Mean</th>
+                            <th>DevStd</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{Query2BackingBean.resultBeansHumidity.dataBeans}" var="r">
+                            <tr>
+                                <td>#{r.country}</td>
+                                <td>#{r.year}</td>
+                                <td>#{r.month}</td>
+                                <td>#{r.mean}</td>
+                                <td>#{r.devStd}</td>
+                                <td>#{r.min}</td>
+                                <td>#{r.max}</td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                    <p class="lead">#{Query2BackingBean.resultBeansPressure.dataType}</p>
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Mean</th>
+                            <th>DevStd</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{Query2BackingBean.resultBeansPressure.dataBeans}" var="r">
+                            <tr>
+                                <td>#{r.country}</td>
+                                <td>#{r.year}</td>
+                                <td>#{r.month}</td>
+                                <td>#{r.mean}</td>
+                                <td>#{r.devStd}</td>
+                                <td>#{r.min}</td>
+                                <td>#{r.max}</td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </ui:define>
+    </ui:composition>
+
+</h:body>
+</html>

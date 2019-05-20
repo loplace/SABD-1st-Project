@@ -1,0 +1,50 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:h = "http://java.sun.com/jsf/html"
+      xmlns:ui = "http://java.sun.com/jsf/facelets">
+
+<h:body>
+    <ui:composition template = "templates/common.xhtml">
+        <ui:define name = "content">
+
+            <!-- Query 3
+         ================================================== -->
+            <section id="query3">
+                <div class="page-header">
+                    <h1>Query 3</h1>
+                </div>
+                <p class="lead">Individuare, per ogni nazione, le 3 citta che hanno registrato nel 2017 la massima differenza di temperature medie nella fascia oraria locale 12:00-15:00 nei mesi di giugno, luglio, agosto e settembre rispetto ai mesi di gennaio, febbraio, marzo e aprile. Confrontare la posizione delle citta nella classifica dell’anno precedente (2016).</p>
+
+                <div class="row-fluid">
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>Abs Mean Diff 2017</th>
+                            <th>Pos 2017</th>
+                            <th>Abs Mean Diff 2017</th>
+                            <th>Pos 2017</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ui:repeat value="#{Query3BackingBean.resultBeans}" var="r">
+                            <tr>
+                                <td>#{r.city}</td>
+                                <td>#{r.absMean2017}</td>
+                                <td>#{r.pos2017}</td>
+                                <td>#{r.absMean2016}</td>
+                                <td>#{r.pos2016}</td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </ui:define>
+    </ui:composition>
+
+</h:body>
+</html>
