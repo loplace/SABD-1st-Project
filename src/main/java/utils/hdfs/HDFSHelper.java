@@ -37,8 +37,8 @@ public class HDFSHelper {
         conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
         conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
         // Set HADOOP user
-        System.setProperty("HADOOP_USER_NAME", "root");
-        System.setProperty("hadoop.home.dir", "/");
+        //System.setProperty("HADOOP_USER_NAME", "root");
+        //System.setProperty("hadoop.home.dir", "/");
         //Get the filesystem - HDFS
         try {
             fs = FileSystem.get(URI.create(hdfsURL), conf);
@@ -103,7 +103,6 @@ public class HDFSHelper {
             inputStream = fs.open(hdfsreadpath);
             out = convertInputStreamToString(inputStream);
             inputStream.close();
-            fs.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

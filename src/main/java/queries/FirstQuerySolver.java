@@ -113,7 +113,7 @@ public class FirstQuerySolver {
 
         final double delta = (end - start)/1000000000L;
 
-        resultRDD.repartition(1).saveAsTextFile(AppConfiguration.getProperty("outputresults.query1")+fileFormat);
+        resultRDD.repartition(1).saveAsTextFile(AppConfiguration.getProperty("outputresults.query1"));
 
         System.out.printf("Query 1 completed in %f seconds\n",delta);
         sb.append(String.format("Query 1 completed in %f seconds\n",delta));
@@ -141,7 +141,6 @@ public class FirstQuerySolver {
         String execTimes= tk.getTableTimes();
         System.out.println(execTimes);
 
-        //HDFSHelper.getInstance().writeStringToHDFS("/output","query1_"+fileFormat+".txt",outPutResults);
         HDFSHelper.getInstance().writeStringToHDFS("/output","query1_"+fileFormat+"_times.txt",execTimes);
 
     }

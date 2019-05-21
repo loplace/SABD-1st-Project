@@ -78,7 +78,11 @@ public class ThirdQuerySolver {
         final double delta = (end - start)/1000000000L;
         System.out.printf("Query 3 completed in %f seconds\n",delta);
         System.out.println("Top 3 of 2017 with relative position in 2016");
-        List<Tuple2<String, Tuple2<Tuple2<Double, Long>, Tuple2<Double, Long>>>> finalResultSet = res2017.join(res2016).collect();
+        JavaPairRDD<String, Tuple2<Tuple2<Double, Long>, Tuple2<Double, Long>>> join = res2017.join(res2016);
+
+        join.repartition(1).saveAsTextFile(AppConfiguration.getProperty("outputresults.query3"));
+
+        List<Tuple2<String, Tuple2<Tuple2<Double, Long>, Tuple2<Double, Long>>>> finalResultSet = join.collect();
 
         printResultSet(finalResultSet);
 
