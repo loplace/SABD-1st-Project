@@ -17,6 +17,7 @@ services:
         volumes: 
             - ./nifi_conf:/usr/local/nifi/conf/flow
             - ./nifi_extensions:/usr/local/nifi/extensions
+            - ./results-uploader:/data/results-uploader
         stdin_open: true
         tty: true
 

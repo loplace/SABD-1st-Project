@@ -5,6 +5,7 @@ import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.util.StatCounter;
 import parser.validators.HumidityValidator;
 import parser.validators.PressureValidator;
@@ -47,7 +48,9 @@ public class SecondQuerySolver {
 
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
-        HDFSDataLoader.setCityMap(cities);
+
+        Broadcast<Map<String, CityModel>> mapBroadcast = jsc.broadcast(cities);
+        HDFSDataLoader.setCityMap(mapBroadcast);
 
 
         JavaRDD<WeatherMeasurementPojo> humidityRDD =

@@ -4,6 +4,7 @@ import model.CityModel;
 import model.WeatherDescriptionPojo;
 import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.broadcast.Broadcast;
 import parser.rddloader.WeatherRDDLoaderFromKafka;
 import parser.rddloader.WeatherRDDLoaderFromParquetFile;
 import parser.rddloader.WeatherRDDLoaderFromTextFile;
@@ -21,8 +22,8 @@ public class HDFSDataLoader {
 
     static Map<String, CityModel> cities;
 
-    public static void setCityMap(Map<String, CityModel> c) {
-        cities = c;
+    public static void setCityMap(Broadcast<Map<String, CityModel>> broadMap) {
+        cities = broadMap.getValue();
     }
 
     public static JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojo(String filePath, IMeasurementValidator validator) {

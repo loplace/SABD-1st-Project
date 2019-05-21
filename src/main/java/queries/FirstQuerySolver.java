@@ -6,6 +6,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.broadcast.Broadcast;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import scala.Tuple2;
@@ -62,8 +63,12 @@ public class FirstQuerySolver {
         //new, use preprocessor to grab city ID for correct UTC
         tk.startPhase("City Attributes Preprocessor");
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
+
         Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
-        HDFSDataLoader.setCityMap(cities);
+
+        Broadcast<Map<String, CityModel>> mapBroadcast = jsc.broadcast(cities);
+        HDFSDataLoader.setCityMap(mapBroadcast);
+
         tk.endPhase("City Attributes Preprocessor");
 
         final double start = System.nanoTime();

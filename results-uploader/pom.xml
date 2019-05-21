@@ -51,6 +51,27 @@
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>
+          <executions>
+            <execution>
+              <id>copy-resource-one</id>
+              <phase>package</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+
+              <configuration>
+                <outputDirectory>${basedir}/../docker-compose/results-uploader</outputDirectory>
+                <resources>
+                  <resource>
+                    <directory>${basedir}/target/</directory>
+                    <includes>
+                      <include>**/*.jar</include>
+                    </includes>
+                  </resource>
+                </resources>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>

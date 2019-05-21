@@ -25,6 +25,8 @@ ADD hdfs-config/core-site.xml /data/hdfsconf
 ADD hdfs-config/hdfs-site.xml /data/hdfsconf
 ADD hbase-config/hbase-site.xml /data/hbaseconf/
 
+VOLUME /data/results-uploader
+
 ADD nar/nifi-location-info-retriever-nar-1.0-SNAPSHOT.nar $NIFI_HOME/lib
 
 ENV DATASET_REPO http://www.ce.uniroma2.it/courses/sabd1819/projects/prj1_dataset.tgz
