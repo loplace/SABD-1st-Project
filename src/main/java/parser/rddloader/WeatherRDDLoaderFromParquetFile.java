@@ -28,6 +28,7 @@ public class WeatherRDDLoaderFromParquetFile {
         sqlContext = new SQLContext(jsc);
         cities = citiesMap;
         WeatherMeasurementParser.setCitiesMap(cities);
+        WeatherDescriptionParser.setCitiesMap(cities);
     }
 
     public JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojoRDD(String parquetFilePath, IMeasurementValidator validator) {
