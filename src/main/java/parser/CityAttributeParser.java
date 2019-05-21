@@ -4,15 +4,16 @@ import model.CityModel;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import utils.configuration.AppConfiguration;
+import utils.hdfs.HDFSHelper;
 import utils.spark.SparkContextSingleton;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 
 public class CityAttributeParser {
 
-    //public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes");
     public final static String csvpath = AppConfiguration.getProperty("dataset.csv.cityattributes_processed");
 
 
@@ -25,6 +26,11 @@ public class CityAttributeParser {
     }
 
     public void parse() {
+        //parseWithRDD();
+        parseSimpleText();
+    }
+
+    private void parseWithRDD() {
         JavaRDD<String> csvData = jsc.textFile(csvpath);
         String csvHeader = csvData.first();
 
@@ -37,8 +43,22 @@ public class CityAttributeParser {
             CityModel m = cityModelIterator.next();
             cities.put(m.getCity(),m);
         }
-
     }
+
+    private void parseSimpleText() {
+        String lines = HDFSHelper.getInstance().readStringFromHDFS(csvpath);
+        Scanner scanner = new Scanner(lines);
+
+        //pop header
+        scanner.nextLine();
+
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+            CityModel m = CityAttributeParser.parseLine(line);
+            cities.put(m.getCity(),m);
+        }
+    }
+
 
     public static CityModel parseLine(String line) {
         String[] tokens = line.split(",");

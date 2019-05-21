@@ -21,7 +21,7 @@ public class WeatherDescriptionParser {
 
             List<WeatherDescriptionPojo> result = new ArrayList<>();
             String[] headers = completeHeader.split(","); // array di 34 elementi (datetime + 33 città)
-            String[] tokens = line.split(","); // array di 34 elementi (datetime + 33 città)
+            String[] tokens = line.split(",",-1); // array di 34 elementi (datetime + 33 città)
 
             int noHeaderItems = headers.length;
             int noTokensItems = tokens.length;
@@ -34,6 +34,11 @@ public class WeatherDescriptionParser {
 
                     if (!description.isEmpty() && !dateTime.isEmpty()) {
                         WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(cityName, dateTime, description);
+
+                        CityModel keyModel = citiesMap.get(cityName);
+                        if (citiesMap!=null && keyModel!=null) {
+                            wdp.setDateTimezone(keyModel.getTimezone());
+                        }
 
                         result.add(wdp);
                     }

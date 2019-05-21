@@ -69,6 +69,10 @@ public class SecondQuerySolver {
 
         System.out.printf("Query 2 completed in %f seconds\n",delta);
 
+        humiditiesOutput.saveAsTextFile("hdfs://master:54310/output/query2/humidity.RDDTextFile");
+        temperaturesOutput.saveAsTextFile("hdfs://master:54310/output/query2/temperature.RDDTextFile");
+        pressuresOutput.saveAsTextFile("hdfs://master:54310/output/query2/pressures.RDDTextFile");
+
         printAggregateValues("Humidity",humiditiesOutput);
         printAggregateValues("Temperature",temperaturesOutput);
         printAggregateValues("Pressure",pressuresOutput);

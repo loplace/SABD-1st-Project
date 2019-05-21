@@ -26,25 +26,25 @@ public class WeatherDescriptionPojo implements Serializable, CityKey {
     @Getter
     private DateTimeZone dateTimezone;
 
-    public WeatherDescriptionPojo(String city, String dateTime, String weatherCondition) {
-        this.city = city;
-        this.dateTime = formatDate(dateTime);
-        this.weatherCondition = weatherCondition;
+    public WeatherDescriptionPojo(String cityName, String dateTimeString, String weatherConditionString) {
+        city = cityName;
+        dateTime = formatDate(dateTimeString);
+        weatherCondition = weatherConditionString;
     }
 
     public DateTime getLocalDateTime(){
-        if (this.dateTimezone!= null) {
-            return  this.dateTime.withZone(this.dateTimezone);
+        if (dateTimezone!= null) {
+            DateTime local = dateTime.withZone(this.dateTimezone);
+            return  local;
         }
-        return this.dateTime;
+        return dateTime;
     }
 
     public void setDateTimezone(String dateTimezone) {
         this.dateTimezone = DateTimeZone.forID(dateTimezone);
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = formatDate(dateTime);
+    public void setDateTime(String dateTimeString) { dateTime = formatDate(dateTimeString);
     }
 
     public static DateTime formatDate(String date){

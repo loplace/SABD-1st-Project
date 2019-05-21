@@ -4,17 +4,18 @@ import lombok.Getter;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.log4j.Logger;
 import utils.configuration.AppConfiguration;
 
 import java.io.*;
 import java.net.URI;
-import java.util.logging.Logger;
+
 
 public class HDFSHelper {
 
     public static final String hdfsURL = AppConfiguration.getProperty("hdfs.uri");
 
-    private static final Logger logger = Logger.getLogger("");
+    private static final Logger logger = Logger.getLogger(HDFSHelper.class);
 
     private Configuration conf;
 
@@ -42,8 +43,8 @@ public class HDFSHelper {
         try {
             fs = FileSystem.get(URI.create(hdfsURL), conf);
         } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            logger.warning("IOException: " + e.getMessage());
+
+            logger.warn("IOException: " + e.getMessage());
         }
 
     }
@@ -60,8 +61,7 @@ public class HDFSHelper {
                 logger.info("Path "+path+" created.");
             }
         } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            logger.warning("IOException: " + e.getMessage());
+            logger.warn("IOException: " + e.getMessage());
         }
 
     }
@@ -73,20 +73,35 @@ public class HDFSHelper {
         return instance;
     }
 
-    public String readStringFromHDFS(String folderpath, String filename){
+    private String convertInputStreamToString(InputStream inputStream) throws IOException {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(System.getProperty("line.separator"));
+            }
+        }
+
+
+        return stringBuilder.toString();
+    }
+
+    public String readStringFromHDFS(String path){
 
         logger.info("Beginning Read on HDFS");
 
-        Path hdfsreadpath = new Path(folderpath + "/" + filename);
+        Path hdfsreadpath = new Path(path);
         //Init input stream
         FSDataInputStream inputStream = null;
-
         //Classical input stream usage
         String out= null;
 
         try {
             inputStream = fs.open(hdfsreadpath);
-            out = SerializationUtils.deserialize(inputStream);
+            out = convertInputStreamToString(inputStream);
             inputStream.close();
             fs.close();
         } catch (IOException e) {
@@ -107,7 +122,6 @@ public class HDFSHelper {
         Path hdfsreadpath = new Path(folderpath + "/" + filename);
         //Init input stream
         FSDataInputStream inputStream = null;
-
         //Classical input stream usage
         Byte out= null;
 
@@ -138,11 +152,10 @@ public class HDFSHelper {
             byte[] data = SerializationUtils.serialize(obj);
 
             fsDataOutputStream.write(data);
-
+            fsDataOutputStream.flush();
             fsDataOutputStream.close();
         } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            logger.warning("IOException: " + e.getMessage());
+            logger.warn("IOException: " + e.getMessage());
         }
 
         logger.info("Ending Write on HDFS");
@@ -161,27 +174,9 @@ public class HDFSHelper {
             fsDataOutputStream.writeChars(data);
             fsDataOutputStream.close();
         } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            logger.warning("IOException: " + e.getMessage());
+            logger.warn("IOException: " + e.getMessage());
         }
         logger.info("Ending Write on HDFS");
     }
-
-
-    public static void main(String[] args) {
-
-        String demoContent = "Ciao Mondo";
-
-        HDFSHelper hdfsInstance = HDFSHelper.getInstance();
-
-        hdfsInstance.writeBytesToHDFS("/demofolder","HelloWorld.txt",demoContent);
-
-        String s = hdfsInstance.readStringFromHDFS("/demofolder", "HelloWorld.txt");
-
-        System.out.println(s);
-
-
-    }
-
 
 }

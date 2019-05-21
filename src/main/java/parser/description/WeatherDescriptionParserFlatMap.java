@@ -19,7 +19,7 @@ public class WeatherDescriptionParserFlatMap implements FlatMapFunction<String, 
 
     public WeatherDescriptionParserFlatMap setCitiesMap(Map<String, CityModel> cities) {
         citiesMap = cities;
-        WeatherMeasurementParser.setCitiesMap(citiesMap);
+        WeatherDescriptionParser.setCitiesMap(citiesMap);
         return this;
     }
 
