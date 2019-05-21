@@ -75,11 +75,12 @@ public class WeatherMeasurementParser {
                     rawValue = (String) row.getAs(cityName);
 
                     if (validator.isValid(rawValue)) {
+                        String parsedCityName = cityName.replace('_',' ');
                         double value = validator.parseValue(rawValue);
-                        WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(cityName, dateTime, value);
+                        WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(parsedCityName, dateTime, value);
 
                         if (citiesMap!=null) {
-                            wmp.setCountry(citiesMap.get(cityName).getCountry());
+                            wmp.setCountry(citiesMap.get(parsedCityName).getCountry());
                         }
                         result.add(wmp);
                     }

@@ -67,11 +67,12 @@ public class WeatherDescriptionParser {
                 Object obj = row.getAs(cityName);
 
                 if(obj!=null) {
+                    String parsedCityName = cityName.replace('_',' ');
                     stringDescription = (String) obj;
                     if (stringDescription!= null && !stringDescription.isEmpty() && !dateTime.isEmpty()) {
-                        WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(cityName, dateTime, stringDescription);
+                        WeatherDescriptionPojo wdp = new WeatherDescriptionPojo(parsedCityName, dateTime, stringDescription);
 
-                        CityModel keyModel = citiesMap.get(cityName);
+                        CityModel keyModel = citiesMap.get(parsedCityName);
                         if (citiesMap!=null && keyModel!=null) {
                             wdp.setDateTimezone(keyModel.getTimezone());
                         }
