@@ -27,9 +27,9 @@ ADD hbase-config/hbase-site.xml /data/hbaseconf/
 
 ADD nar/nifi-location-info-retriever-nar-1.0-SNAPSHOT.nar $NIFI_HOME/lib
 
-ENV DATASET_REPO http://www.acsiciclismoabruzzo.it/sabd/
+ENV DATASET_REPO http://www.ce.uniroma2.it/courses/sabd1819/projects/prj1_dataset.tgz
 WORKDIR /data
-RUN wget $DATASET_REPO/city_attributes.csv; wget $DATASET_REPO/temperature.csv; wget $DATASET_REPO/weather_description.csv; wget $DATASET_REPO/pressure.csv; wget $DATASET_REPO/humidity.csv; 
+RUN wget $DATASET_REPO; tar -xzf prj1_dataset.tgz; mv prj1_dataset/* /data; rm prj1_dataset.tgz
 
 # trucco per tenere attivo il container dopo lo start
 # exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
