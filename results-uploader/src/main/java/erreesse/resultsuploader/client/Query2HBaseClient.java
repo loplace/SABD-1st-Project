@@ -50,15 +50,16 @@ public class Query2HBaseClient extends AGenericQueryBaseClient<WrapperQuery2> {
         }
     }
 
-    private void insertAllMeasurementValues(String columnFamily, Query2DataRow query2DataRow) {
-
+    private boolean insertAllMeasurementValues(String columnFamily, Query2DataRow query2DataRow) {
+        boolean uploaded = false;
         for (int i=0; i<4; i++) {
-            put(tableName,
+            uploaded = put(tableName,
                     query2DataRow.getRowKey(),
                     columnFamily,
                     columnNames[i],
                     query2DataRow.getColumnValueAtIndex(i));
         }
+        return uploaded;
 
     }
 

@@ -18,6 +18,8 @@ public abstract class AGenericQueryBaseClient<T extends AQueryDataRow> extends H
     @Getter
     protected List<T> results;
 
+    protected int uploadedCounter = 0;
+
     public AGenericQueryBaseClient(String nameOfTable) {
         tableName = nameOfTable;
         results = new ArrayList<>();
@@ -55,11 +57,15 @@ public abstract class AGenericQueryBaseClient<T extends AQueryDataRow> extends H
 
         for (T singleResult : results) {
             //hbc.put("products", "row1", "fam1", "col1", "val1");
-            put(tableName,
-                singleResult.getRowKey(),
-                columnFamily,
-                singleResult.getColumnName(),
-                singleResult.getColumnValue());
+            boolean uploaded = put(tableName,
+                    singleResult.getRowKey(),
+                    columnFamily,
+                    singleResult.getColumnName(),
+                    singleResult.getColumnValue());
+
+            if (uploaded) {
+                uploadedCounter++;
+            }
         }
     }
 }
