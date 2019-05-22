@@ -14,6 +14,7 @@ services:
         ports:
             - "5555:5555"
             - "43210:43210" #remote intellij degugging port
+            - "43212:43212"
         volumes: 
             - ./nifi_conf:/usr/local/nifi/conf/flow
             - ./nifi_extensions:/usr/local/nifi/extensions

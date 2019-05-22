@@ -3,6 +3,7 @@ package erreesse.resultsuploader.client;
 import erreesse.resultsuploader.datarow.AQueryDataRow;
 import erreesse.resultsuploader.datarow.Query1DataRow;
 import erreesse.resultsuploader.tabledescriptor.Query1TableDescriptor;
+import erreesse.resultsuploader.tabledescriptor.Query2TableDescriptor;
 import lombok.Getter;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -32,7 +33,7 @@ public abstract class AGenericQueryBaseClient<T extends AQueryDataRow> extends H
             case "query1":
                 return new Query1HBaseClient(Query1TableDescriptor.TABLE_NAME);
             case "query2":
-                return null;
+                return new Query2HBaseClient(Query2TableDescriptor.TABLE_NAME);
             case "query3":
                 return null;
             default:

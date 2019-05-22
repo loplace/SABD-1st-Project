@@ -34,6 +34,7 @@ public class HBaseClient {
     private Connection connection = null;
 
     private static byte[] b(String s){
+
         return Bytes.toBytes(s);
     }
 
@@ -332,7 +333,7 @@ public class HBaseClient {
 
             return true;
         } catch (IOException | ServiceException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         return false;

@@ -40,4 +40,4 @@ CMD $NIFI_HOME/bin/nifi.sh start ; exec /bin/bash -c "trap : TERM INT; sleep inf
 EXPOSE 5555 
 
 # nifi remote debugging
-EXPOSE 43210
+EXPOSE 43210 43212
