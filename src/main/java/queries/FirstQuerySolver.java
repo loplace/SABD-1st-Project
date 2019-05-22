@@ -66,8 +66,7 @@ public class FirstQuerySolver {
 
         Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
 
-        Broadcast<Map<String, CityModel>> mapBroadcast = jsc.broadcast(cities);
-        HDFSDataLoader.setCityMap(mapBroadcast);
+        HDFSDataLoader.setCityMap(cities);
 
         tk.endPhase("City Attributes Preprocessor");
 

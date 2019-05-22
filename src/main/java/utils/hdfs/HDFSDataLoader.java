@@ -22,8 +22,8 @@ public class HDFSDataLoader {
 
     static Map<String, CityModel> cities;
 
-    public static void setCityMap(Broadcast<Map<String, CityModel>> broadMap) {
-        cities = broadMap.getValue();
+    public static void setCityMap(Map<String, CityModel> map) {
+        cities = map;
     }
 
     public static JavaRDD<WeatherMeasurementPojo> loadWeatherMeasurementPojo(String filePath, IMeasurementValidator validator) {

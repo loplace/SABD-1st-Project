@@ -17,7 +17,7 @@ public class WeatherDescriptionParser {
             citiesMap = c;
         }
 
-        public static Iterator<WeatherDescriptionPojo> parseLine(String completeHeader, String line) {
+        public static Iterator<WeatherDescriptionPojo> parseLine(String completeHeader, String line,Map<String, CityModel> citiesMap) {
 
             List<WeatherDescriptionPojo> result = new ArrayList<>();
             String[] headers = completeHeader.split(","); // array di 34 elementi (datetime + 33 città)
@@ -48,7 +48,7 @@ public class WeatherDescriptionParser {
         }
 
 
-    public static Iterator<WeatherDescriptionPojo> parseParquetRow(Row row) {
+    public static Iterator<WeatherDescriptionPojo> parseParquetRow(Row row,Map<String, CityModel> citiesMap) {
 
         List<WeatherDescriptionPojo> result = new ArrayList<>();
 

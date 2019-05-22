@@ -21,7 +21,7 @@ public class WeatherMeasurementParser {
 
 
 
-    public static Iterator<WeatherMeasurementPojo> parseLine(String completeHeader, String line, IMeasurementValidator validator) {
+    public static Iterator<WeatherMeasurementPojo> parseLine(String completeHeader, String line, IMeasurementValidator validator, Map<String, CityModel> citiesMap) {
 
         if (validator == null) {
             throw new IllegalStateException("Validator must be set");
@@ -57,7 +57,7 @@ public class WeatherMeasurementParser {
         return result.iterator();
     }
 
-    public static Iterator<WeatherMeasurementPojo> parseParquetRow(Row row,IMeasurementValidator validator) {
+    public static Iterator<WeatherMeasurementPojo> parseParquetRow(Row row,IMeasurementValidator validator,Map<String, CityModel> citiesMap) {
 
         List<WeatherMeasurementPojo> result = new ArrayList<>();
 

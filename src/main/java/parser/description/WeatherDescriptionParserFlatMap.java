@@ -26,6 +26,6 @@ public class WeatherDescriptionParserFlatMap implements FlatMapFunction<String, 
     @Override
     public Iterator<WeatherDescriptionPojo> call(String line) {
 
-        return WeatherDescriptionParser.parseLine(header,line);
+        return WeatherDescriptionParser.parseLine(header,line,citiesMap);
     }
 }

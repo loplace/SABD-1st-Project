@@ -49,8 +49,8 @@ public class SecondQuerySolver {
         //new, use preprocessor to grab city ID for correct UTC
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
-        Broadcast<Map<String, CityModel>> mapBroadcast = jsc.broadcast(cities);
-        HDFSDataLoader.setCityMap(mapBroadcast);
+        //Broadcast<Map<String, CityModel>> mapBroadcast = jsc.broadcast(cities);
+        HDFSDataLoader.setCityMap(cities);
 
 
         JavaRDD<WeatherMeasurementPojo> humidityRDD =

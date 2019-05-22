@@ -32,6 +32,6 @@ public class WeatherMeasurementParserFlatMap implements FlatMapFunction<String, 
 
     @Override
     public Iterator<WeatherMeasurementPojo> call(String line) {
-        return WeatherMeasurementParser.parseLine(header,line,validator);
+        return WeatherMeasurementParser.parseLine(header,line,validator,citiesMap);
     }
 }

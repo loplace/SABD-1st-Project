@@ -37,7 +37,7 @@ public class WeatherRDDLoaderFromParquetFile {
         JavaRDD<Row> rowJavaRDD = df.toJavaRDD();
 
         JavaRDD<WeatherMeasurementPojo> result = rowJavaRDD.flatMap(
-                row -> WeatherMeasurementParser.parseParquetRow(row,validator)
+                row -> WeatherMeasurementParser.parseParquetRow(row,validator,cities)
         );
 
         return result;
@@ -49,7 +49,7 @@ public class WeatherRDDLoaderFromParquetFile {
         JavaRDD<Row> rowJavaRDD = df.toJavaRDD();
 
         JavaRDD<WeatherDescriptionPojo> result = rowJavaRDD.flatMap(
-                row -> WeatherDescriptionParser.parseParquetRow(row)
+                row -> WeatherDescriptionParser.parseParquetRow(row,cities)
         );
         return result;
     }
