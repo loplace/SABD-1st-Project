@@ -1,4 +1,4 @@
-package resultsuploader.datarow;
+package erreesse.resultsuploader.datarow;
 
 import lombok.Data;
 

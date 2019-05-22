@@ -1,4 +1,4 @@
-package resultsuploader.datarow;
+package erreesse.resultsuploader.datarow;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Query2DataRow {
+public class Query2DataRow  extends AQueryDataRow {
 
     private String country;
     private String year;
@@ -16,4 +16,14 @@ public class Query2DataRow {
     private String devStd;
     private String min;
     private String max;
+
+    @Override
+    public String getRowKey() {
+        return country+"_"+year+"_"+month;
+    }
+
+    @Override
+    public String getColumnValue() {
+        return null;
+    }
 }

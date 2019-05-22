@@ -1,4 +1,4 @@
-package resultsuploader.datarow;
+package erreesse.resultsuploader.datarow;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Query3DataRow {
+public class Query3DataRow  extends AQueryDataRow {
 
     private String city;
 
@@ -17,4 +17,14 @@ public class Query3DataRow {
     private String absMean2016;
 
     private String pos2016;
+
+    @Override
+    public String getRowKey() {
+        return city;
+    }
+
+    @Override
+    public String getColumnValue() {
+        return null;
+    }
 }
