@@ -6,8 +6,3 @@ docker-compose/spark_jar/SABD-project1-1.0-SNAPSHOT.jar
 docker-compose/nifi_extensions
 docker-compose/jetty_wars
 docker-compose/results-uploader
-sabd-web-gui/target
-
-docker-compose/spark-metrics/applicationMaster
-docker-compose/spark-metrics/driver
-docker-compose/spark-metrics/master
