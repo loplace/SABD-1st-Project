@@ -94,30 +94,19 @@ public class ThirdQuerySolver {
         });
 
 
-        JavaPairRDD<Tuple2, Tuple2<Tuple2, Tuple2>> join = reKeyed2016.join(reKeyed2017);
+        JavaPairRDD<Tuple2, Tuple2<Tuple2, Tuple2>> finalResultRDD = reKeyed2016.join(reKeyed2017);
 
-        List<Tuple2<Tuple2, Tuple2<Tuple2, Tuple2>>> collect = join.collect();
-        collect.forEach(System.out::println);
+        finalResultRDD.repartition(1).saveAsTextFile(AppConfiguration.getProperty("outputresults.query3"));
+
+        /*List<Tuple2<Tuple2, Tuple2<Tuple2, Tuple2>>> collect = finalResultRDD.collect();
+        collect.forEach(System.out::println);*/
 
 
-        System.out.println("Size collect" + collect.size());
+        //System.out.println("Size collect" + collect.size());
         final double end = System.nanoTime();
         final double delta = (end - start)/1000000000L;
         System.out.printf("Query 3 completed in %f seconds\n",delta);
 
-    }
-
-    private static void printResultSet(List<Tuple2<Tuple2<String,String>, Tuple2<Tuple2<Double, Long>, Tuple2<Double, Long>>>> finalResultSet) {
-        System.out.println("City\t Abs Mean Diff 2017 \t Pos 2017\t Abs Mean Diff 2017 \t Pos 2017\t");
-        finalResultSet.forEach(x -> {
-            String country = x._1()._1();
-            String city = x._1()._2();
-            double val2017 = x._2()._1()._1();
-            long pos2017 = x._2()._1()._2();
-            double val2016 = x._2()._2()._1();
-            long pos2016 = x._2()._2()._2();
-            System.out.printf("%s\t%s\t%f\t%d\t%f\t%d\n",country,city,val2017,pos2017,val2016,pos2016);
-        });
     }
 
     private static JavaPairRDD<String, Tuple3<String, Double, Integer>> createRankByHotNColdAvgDiff(JavaRDD<WeatherMeasurementPojo> tempPerYearRDD, ARankCombiner combiner) {

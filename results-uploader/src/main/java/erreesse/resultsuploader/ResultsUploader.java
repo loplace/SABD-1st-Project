@@ -1,6 +1,7 @@
 package erreesse.resultsuploader;
 
 import erreesse.resultsuploader.client.AGenericQueryBaseClient;
+import erreesse.resultsuploader.client.HBaseClient;
 
 import java.util.Scanner;
 
@@ -39,5 +40,6 @@ public class ResultsUploader {
         System.out.println("Start uploading results");
         hBaseClient.putResults(columnFamily);
         System.out.println("End uploading results");
+        System.out.println("Uploaded "+ hBaseClient.getUploadedCounter()+" results");
     }
 }

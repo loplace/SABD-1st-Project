@@ -4,6 +4,7 @@ import erreesse.resultsuploader.datarow.AQueryDataRow;
 import erreesse.resultsuploader.datarow.Query1DataRow;
 import erreesse.resultsuploader.tabledescriptor.Query1TableDescriptor;
 import erreesse.resultsuploader.tabledescriptor.Query2TableDescriptor;
+import erreesse.resultsuploader.tabledescriptor.Query3TableDescriptor;
 import lombok.Getter;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -18,6 +19,7 @@ public abstract class AGenericQueryBaseClient<T extends AQueryDataRow> extends H
     @Getter
     protected List<T> results;
 
+    @Getter
     protected int uploadedCounter = 0;
 
     public AGenericQueryBaseClient(String nameOfTable) {
@@ -37,9 +39,9 @@ public abstract class AGenericQueryBaseClient<T extends AQueryDataRow> extends H
             case "query2":
                 return new Query2HBaseClient(Query2TableDescriptor.TABLE_NAME);
             case "query3":
-                return null;
+                return new Query3HBaseClient(Query3TableDescriptor.TABLE_NAME);
             default:
-                throw new IllegalArgumentException("Table not extists");
+                throw new IllegalArgumentException("Table not exists");
         }
     }
 

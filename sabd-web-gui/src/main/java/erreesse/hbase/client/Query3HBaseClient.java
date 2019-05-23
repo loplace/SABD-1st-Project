@@ -18,7 +18,17 @@ public class Query3HBaseClient extends AGenericQueryBaseClient<Query3ResultBean>
         Query3ResultBean bean = null;
 
         // aId, uId, cId
-        String city = Bytes.toString(rowkey);
+        String key = Bytes.toString(rowkey);
+
+        String country = Bytes.toString(
+                        result.getValue(
+                        b(Query3TableDescriptor.CITY_INFO_COLUMN_FAMILY),
+                        Bytes.toBytes(Query3TableDescriptor.COUNTRY)));
+
+        String city = Bytes.toString(
+                        result.getValue(
+                        b(Query3TableDescriptor.CITY_INFO_COLUMN_FAMILY),
+                        Bytes.toBytes(Query3TableDescriptor.CITY)));
 
 
         String absMean2017 = Bytes.toString(
@@ -41,7 +51,7 @@ public class Query3HBaseClient extends AGenericQueryBaseClient<Query3ResultBean>
                         b(Query3TableDescriptor.DATES_2016_COLUMN_FAMILY),
                         Bytes.toBytes(Query3TableDescriptor.POS)));
 
-        bean = new Query3ResultBean(city,absMean2017,pos2017,absMean2016,pos2016);
+        bean = new Query3ResultBean(country,city,absMean2017,pos2017,absMean2016,pos2016);
 
         return bean;
     }

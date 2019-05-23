@@ -18,7 +18,6 @@ import utils.hdfs.HDFSHelper;
 import utils.kafka.MyKafkaProducer;
 import utils.locationinfo.CityAttributesPreprocessor;
 import utils.spark.SparkContextSingleton;
-import utils.timekeeper.TimeKeeper;
 
 import java.util.Arrays;
 import java.util.List;

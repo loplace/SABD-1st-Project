@@ -21,6 +21,7 @@
                     <table class="table table-condensed table-hover">
                         <thead>
                         <tr>
+                            <th>Country</th>
                             <th>City</th>
                             <th>Abs Mean Diff 2017</th>
                             <th>Pos 2017</th>
@@ -31,6 +32,7 @@
                         <tbody>
                         <ui:repeat value="#{Query3BackingBean.resultBeans}" var="r">
                             <tr>
+                                <td>#{r.country}</td>
                                 <td>#{r.city}</td>
                                 <td>#{r.absMean2017}</td>
                                 <td>#{r.pos2017}</td>

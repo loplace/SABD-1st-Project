@@ -8,6 +8,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class Query3DataRow  extends AQueryDataRow {
 
+    private String country;
+
     private String city;
 
     private String absMean2017;
@@ -20,7 +22,7 @@ public class Query3DataRow  extends AQueryDataRow {
 
     @Override
     public String getRowKey() {
-        return city;
+        return country+"_"+pos2017;
     }
 
     @Override

@@ -10,6 +10,8 @@ import javax.faces.bean.ManagedBean;
 @AllArgsConstructor
 public class Query3ResultBean {
 
+    private String country;
+
     private String city;
 
     private String absMean2017;
