@@ -69,3 +69,5 @@ EXPOSE 22
 
 # Spark remote debugging for intellij
 EXPOSE 43211
+# Spark History UI port
+EXPOSE 18080

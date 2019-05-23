@@ -31,10 +31,11 @@ services:
         networks:
             - app_network
         ports:
-            - "9870:9870"
-            - "8088:8088"
-            - "54310:54310"
-            - "43211:43211" #remote intellij degugging port
+            - "9870:9870" # hdfs ui
+            - "8088:8088" # yarn cluster dashboard 
+            - "54310:54310" # hdfs 
+            - "43211:43211" #remote intellij degugging 
+            - "18080:18080" #spark history ui 
         volumes: 
             - ./spark_jar:/sabd/jar
         stdin_open: true
