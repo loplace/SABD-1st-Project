@@ -26,6 +26,10 @@ public class WeatherMeasurementPojo implements Serializable, CityKey {
     @Getter @Setter
     private String country;
 
+    @Getter
+    private DateTimeZone dateTimezone;
+
+
     private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(DateTimeZone.UTC);
 
 
@@ -38,6 +42,18 @@ public class WeatherMeasurementPojo implements Serializable, CityKey {
     public static DateTime formatDate(String date){
 
         return DateTime.parse(date,formatter);
+    }
+
+    public void setDateTimezone(String dateTimezone) {
+        this.dateTimezone = DateTimeZone.forID(dateTimezone);
+    }
+
+    public DateTime getLocalDateTime(){
+        if (dateTimezone!= null) {
+            DateTime local = measuredAt.withZone(dateTimezone);
+            return  local;
+        }
+        return measuredAt;
     }
 
 }

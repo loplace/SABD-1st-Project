@@ -48,7 +48,9 @@ public class WeatherMeasurementParser {
                     WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(cityName, dateTime, value);
 
                     if (citiesMap!=null) {
-                        wmp.setCountry(citiesMap.get(cityName).getCountry());
+                        CityModel cityModel = citiesMap.get(cityName);
+                        wmp.setCountry(cityModel.getCountry());
+                        wmp.setDateTimezone(cityModel.getTimezone());
                     }
                     result.add(wmp);
                 }
@@ -80,7 +82,9 @@ public class WeatherMeasurementParser {
                         WeatherMeasurementPojo wmp = new WeatherMeasurementPojo(parsedCityName, dateTime, value);
 
                         if (citiesMap!=null) {
-                            wmp.setCountry(citiesMap.get(parsedCityName).getCountry());
+                            CityModel cityModel = citiesMap.get(cityName);
+                            wmp.setCountry(cityModel.getCountry());
+                            wmp.setDateTimezone(cityModel.getTimezone());
                         }
                         result.add(wmp);
                     }
