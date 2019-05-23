@@ -27,8 +27,11 @@ public class SecondQuerySolver {
 
         String sparkExecContext = args[0];
         String fileFormat = args[1];
+        String appName = args[2]; // app name
 
-        AppConfiguration.setSparkExecutionContext(sparkExecContext);
+        AppConfiguration
+                .setSparkExecutionContext(sparkExecContext)
+                .setApplicationName(appName);
         JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
 
         System.out.println("sparkExecContext: "+sparkExecContext);
