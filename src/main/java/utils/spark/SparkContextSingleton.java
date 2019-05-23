@@ -20,7 +20,8 @@ public class SparkContextSingleton {
 
 
     private SparkContextSingleton(String local) {
-        SparkConf conf = new SparkConf().setAppName("Query").set("spark.hadoop.validateOutputSpecs", "false");
+        String appName = AppConfiguration.getApplicationName();
+        SparkConf conf = new SparkConf().setAppName(appName).set("spark.hadoop.validateOutputSpecs", "false");
 
         if (local.equals("local")) {
             conf.setMaster("local[*]");

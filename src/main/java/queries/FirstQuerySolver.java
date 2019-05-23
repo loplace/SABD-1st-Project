@@ -35,10 +35,13 @@ public class FirstQuerySolver {
 
         String sparkExecContext = args[0];
         String fileFormat = args[1];
+        String appName = args[2];
 
 
+        AppConfiguration
+                .setSparkExecutionContext(sparkExecContext)
+                .setApplicationName(appName);
 
-        AppConfiguration.setSparkExecutionContext(sparkExecContext);
         JavaSparkContext jsc = SparkContextSingleton.getInstance().getContext();
 
 

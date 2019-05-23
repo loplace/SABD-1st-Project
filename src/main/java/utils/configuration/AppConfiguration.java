@@ -1,6 +1,7 @@
 package utils.configuration;
 
-import java.io.FileInputStream;
+import lombok.Getter;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ public class AppConfiguration {
     private Properties prop;
     private static AppConfiguration instance;
     private String sparkExecuteContext;
+    @Getter
+    private String applicationName;
 
     private AppConfiguration(String fileConf) {
         try {
@@ -42,8 +45,18 @@ public class AppConfiguration {
         return appConfiguration;
     }
 
+    public static AppConfiguration setApplicationName(String appName) {
+        AppConfiguration appConfiguration = AppConfiguration.getInstance();
+        appConfiguration.applicationName = appName;
+        return appConfiguration;
+    }
+
     public static String getSparkExecuteContext() {
         return AppConfiguration.getInstance().sparkExecuteContext;
+    }
+
+    public static String getApplicationName() {
+        return AppConfiguration.getInstance().applicationName;
     }
 
 }
