@@ -5,7 +5,6 @@ import model.WeatherMeasurementPojo;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.util.StatCounter;
 import parser.validators.HumidityValidator;
 import parser.validators.PressureValidator;
@@ -46,13 +45,13 @@ public class SecondQuerySolver {
 
         final double start = System.nanoTime();
 
-        //new, use preprocessor to grab city ID for correct UTC
+        // preprocessor to grab city ID for correct UTC and city nations
         Map<String, CityModel> cities = new CityAttributesPreprocessor().process().getCities();
 
         //Broadcast<Map<String, CityModel>> mapBroadcast = jsc.broadcast(cities);
         HDFSDataLoader.setCityMap(cities);
 
-
+        //Custom validators to check if data are reasonable (i.e. a temperature of thousands Kelvin)
         JavaRDD<WeatherMeasurementPojo> humidityRDD =
                 HDFSDataLoader.loadWeatherMeasurementPojo(pathHumidity,new HumidityValidator());
 
@@ -62,6 +61,7 @@ public class SecondQuerySolver {
         JavaRDD<WeatherMeasurementPojo> pressureRDD =
                 HDFSDataLoader.loadWeatherMeasurementPojo(pathPressure, new PressureValidator());
 
+        //For each dataset, create RDD with Key = Tuple3<Country, Year, Month>, Value = Tuple4<Mean,Std, Min, Max>
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> humiditiesOutput = computeAggregateValuesFromRDD(humidityRDD);
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> temperaturesOutput = computeAggregateValuesFromRDD(temperatureRDD);
         JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>> pressuresOutput = computeAggregateValuesFromRDD(pressureRDD);
@@ -98,8 +98,8 @@ public class SecondQuerySolver {
 
     private static JavaPairRDD<Tuple3<String, Integer, Integer>, Tuple4<Double, Double, Double, Double>>
                         computeAggregateValuesFromRDD(JavaRDD<WeatherMeasurementPojo> measurementPojoJavaRDD) {
-        // Chiave: country,year,month
-        // Valore: Double della misurazione
+
+        // Key: Tuple3<country,year,month> , Value = measurement value
         JavaPairRDD<Tuple3<String,Integer,Integer>, Double> keyedByCountryRDD = measurementPojoJavaRDD.mapToPair(
                 wmp -> {
                  String country = wmp.getCountry();
@@ -110,11 +110,14 @@ public class SecondQuerySolver {
                  return new Tuple2<>(tupleKey,wmp.getMeasurementValue());
                 });
 
+        //Use statcounter to compute aggregate values (mean, std, min, max),
         return keyedByCountryRDD.aggregateByKey(
                 new StatCounter(),
                 (acc, x) -> acc.merge(x),
                 (acc1, acc2) -> acc1.merge(acc2)
             )
+
+        //Key = Tuple3<Country, year, month>, Value = Tuple4<mean, std, min, max>
             .mapToPair(x -> {
                 Tuple3<String,Integer,Integer> key = x._1();
                 Double mean = x._2().mean();

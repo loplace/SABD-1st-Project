@@ -33,9 +33,9 @@ public class FirstQuerySolver {
 
     public static void main(String args[]) {
 
-        String sparkExecContext = args[0];
-        String fileFormat = args[1];
-        String appName = args[2];
+        String sparkExecContext = args[0]; //local or cluster
+        String fileFormat = args[1]; //csv, parquet, read from kafka topic
+        String appName = args[2]; // app name
 
 
         AppConfiguration
@@ -58,7 +58,7 @@ public class FirstQuerySolver {
         Integer[] months = {3,4,5};
         List<Integer> selectedMonths = Arrays.asList(months);
 
-        //new, use preprocessor to grab city ID for correct UTC
+        //Grab city ID for correct UTC and nation
         CityAttributesPreprocessor cityAttributesPreprocessor = new CityAttributesPreprocessor();
 
         Map<String, CityModel> cities = cityAttributesPreprocessor.process().getCities();
@@ -67,28 +67,47 @@ public class FirstQuerySolver {
 
         final double start = System.nanoTime();
 
-
+        //Create RDD containing pojos of weather description
         JavaRDD<WeatherDescriptionPojo> descriptionRDD = HDFSDataLoader.loadWeatherDescriptiontPojo(pathDescription);
 
-        //prendo tutti i POJO che si riferiscono a Marzo, Aprile e Maggio
+        //Custom filter to grab only pojos where month is March, April and May
         Function<WeatherDescriptionPojo,Boolean> filterMarchAprilMay = e-> selectedMonths.contains(e.getLocalDateTime().getMonthOfYear());
+
+        //apply filter for months
         JavaPairRDD<Integer, Iterable<String>> resultRDD = descriptionRDD.filter(filterMarchAprilMay)
+                //take only pojos where description is "sky is clear
                 .filter(wdp -> wdp.getWeatherCondition().equals("sky is clear"))
+
+                //take pojos during daylight, meaning from 08:00 to 18:00
                 .filter(wdp -> wdp.getLocalDateTime().hourOfDay().compareTo(startHour) >=0 &&
                         wdp.getLocalDateTime().hourOfDay().compareTo(endHour)<=0 )
+
+                // key = Tuple4<Year,City,Month,Day of the month>, value =1
                 .mapToPair( wdp ->
                         new Tuple2<>(new Tuple4<> (wdp.getLocalDateTime().getYear(),
                                 wdp.getCity(), wdp.getLocalDateTime().getMonthOfYear(),
                                 wdp.getLocalDateTime().getDayOfMonth()),STATICONE))
+
+                //count number of hours of "sky is clear" during daylight
                 .reduceByKey((a, b) -> a+b)
+
+                //Take only records that have at least 8 hours of "Sky is clear" during daylight
                 .filter(wdp-> wdp._2() >= 8)
+
+                // key = Tuple3<Year, city, month> , value =1
                 .mapToPair(wdp -> {
                     Tuple4<Integer, String, Integer, Integer> oldK = wdp._1();
                     Tuple3<Integer, String, Integer> newK = new Tuple3<>(oldK._1(),oldK._2(),oldK._3());
                     return new Tuple2<>(newK,STATICONE);
                 })
+
+                //Count how many days have 8 hours of sky is clear during daylight
                 .reduceByKey((a,b) -> a+b)
+
+                //Take only records that have at least 15 days with 8 hours of sky is clear during daylight
                 .filter(wdp-> wdp._2() >= 15)
+
+                // key = Tuple2<Year,City>, value is 1
                 .mapToPair(wdp -> {
 
                     Tuple3<Integer, String, Integer> oldK = wdp._1();
@@ -96,11 +115,16 @@ public class FirstQuerySolver {
 
                     return new Tuple2<>(newK,STATICONE);
                 })
+
+                //Count how many months have  at least 15 days with 8 hours of sky is clear during daylight
                 .reduceByKey((a,b) -> a+b)
+
+                //Take only records that have 15 days... in March && April && May
                 .filter(wdp-> wdp._2() == 3)
+
+                //Key = Year, Value = City that satisfied all the requisites
                 .mapToPair(wdp-> new Tuple2<>(wdp._1()._1(),wdp._1()._2()))
                 .groupByKey();
-
 
 
         final double end = System.nanoTime();
@@ -110,14 +134,6 @@ public class FirstQuerySolver {
         resultRDD.repartition(1).saveAsTextFile(AppConfiguration.getProperty("outputresults.query1"));
 
         System.out.printf("Query 1 completed in %f seconds\n",delta);
-
-
-        //List<Tuple2<Integer, Iterable<String>>> list = resultRDD.collect();
-
-      /*  MyKafkaProducer mkp = new MyKafkaProducer();
-        mkp.putQueryResultonKafka("query1results",null,list);
-*/
-
 
     }
 
