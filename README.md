@@ -78,3 +78,10 @@ Go back to NiFi and start processors group named:
 - Save results on hbase
 
 Results are available at SABD-GUI available at http://localhost:65000/sabdgui/
+
+## Owners
+
+Ronci Federico - Computer Engineering - University of Rome Tor Vergata
+
+Schiazza Antonio - Computer Engineering - University of Rome Tor Vergata
+
