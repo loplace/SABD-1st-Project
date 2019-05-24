@@ -73,9 +73,9 @@ public class ThirdQuerySolver {
         JavaRDD<WeatherMeasurementPojo> tempPer2017RDD = temperaturesRDD.filter(x -> x.getMeasuredAt().getYear()==2017);
 
         // Key = Nation, value = <City,Diff>
-        JavaPairRDD<String, Tuple3<String, Double, Integer>> descRankByMeanDiff2016 = createRankByHotNColdAvgDiff(tempPer2016RDD, new TruncatedCombiner());
+        JavaPairRDD<String, Tuple3<String, Double, Integer>> descRankByMeanDiff2016 = createRankByHotNColdAvgDiff(tempPer2016RDD, new CompleteCombiner());
 
-        JavaPairRDD<String, Tuple3<String, Double, Integer>> descRankByMeanDiff2017 = createRankByHotNColdAvgDiff(tempPer2017RDD, new CompleteCombiner());
+        JavaPairRDD<String, Tuple3<String, Double, Integer>> descRankByMeanDiff2017 = createRankByHotNColdAvgDiff(tempPer2017RDD, new TruncatedCombiner());
 
         JavaPairRDD<Tuple2, Tuple2> reKeyed2016 = descRankByMeanDiff2016.mapToPair(x -> {
             Tuple2<String, String> key = new Tuple2<>(x._1(), x._2()._1());
@@ -93,16 +93,10 @@ public class ThirdQuerySolver {
 
         });
 
-
-        JavaPairRDD<Tuple2, Tuple2<Tuple2, Tuple2>> finalResultRDD = reKeyed2016.join(reKeyed2017);
-
+        JavaPairRDD<Tuple2, Tuple2<Tuple2, Tuple2>> finalResultRDD = reKeyed2017.join(reKeyed2016);
         finalResultRDD.repartition(1).saveAsTextFile(AppConfiguration.getProperty("outputresults.query3"));
 
-        /*List<Tuple2<Tuple2, Tuple2<Tuple2, Tuple2>>> collect = finalResultRDD.collect();
-        collect.forEach(System.out::println);*/
 
-
-        //System.out.println("Size collect" + collect.size());
         final double end = System.nanoTime();
         final double delta = (end - start)/1000000000L;
         System.out.printf("Query 3 completed in %f seconds\n",delta);

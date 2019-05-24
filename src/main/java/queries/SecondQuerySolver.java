@@ -81,9 +81,9 @@ public class SecondQuerySolver {
 
 
 
-        printAggregateValues("Humidity",humiditiesOutput);
-        printAggregateValues("Temperature",temperaturesOutput);
-        printAggregateValues("Pressure",pressuresOutput);
+        //printAggregateValues("Humidity",humiditiesOutput);
+        //printAggregateValues("Temperature",temperaturesOutput);
+        //printAggregateValues("Pressure",pressuresOutput);
 
 
     }

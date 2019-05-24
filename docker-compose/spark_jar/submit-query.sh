@@ -60,6 +60,7 @@ spark_submit_cluster() {
     --driver-memory 2g \
     --executor-memory 1g \
     --executor-cores 1 \
+    --num-executors 4 \
     /sabd/jar/SABD-project1-1.0-SNAPSHOT.jar $context $fileformat $queryname
 
 }
